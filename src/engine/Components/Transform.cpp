@@ -10,6 +10,11 @@ void Transform::OnIterate()
 
 }
 
+std::unique_ptr<Component> Transform::copy()
+{
+	return std::make_unique<Transform>(gameObject, m_pos, m_rot);
+}
+
 const Vector3& Transform::GetPosition() const
 {
 	return m_pos;

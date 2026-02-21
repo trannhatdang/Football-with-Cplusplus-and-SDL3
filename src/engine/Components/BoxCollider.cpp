@@ -12,14 +12,14 @@ void BoxCollider::OnIterate()
 
 }
 
-void BoxCollider::OnDraw(SDL_Renderer* renderer)
+void BoxCollider::OnEvent(SDL_Event* event)
 {
 
 }
 
-void BoxCollider::OnEvent(SDL_Event* event)
+std::unique_ptr<Component> BoxCollider::copy()
 {
-
+	return std::make_unique<BoxCollider>(gameObject, m_offset);
 }
 
 const BColliderOff& BoxCollider::GetOffset() const 

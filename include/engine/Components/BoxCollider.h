@@ -21,8 +21,8 @@ class BoxCollider : public Component
 		BoxCollider(GameObject* gameObject, const BColliderOff& offset);
 		void OnStart();
 		void OnIterate();
-		void OnDraw(SDL_Renderer* renderer);
 		void OnEvent(SDL_Event* event);
+		std::unique_ptr<Component> copy();
 		const BColliderOff& GetOffset() const;
 		void SetOffset(const BColliderOff& offset);
 };

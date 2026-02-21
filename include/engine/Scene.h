@@ -17,7 +17,7 @@ class Scene
 		void OnStart();
 		void OnIterate();
 		void OnFixedIterate();
-		void OnDraw(SDL_Renderer* renderer);
+		void OnDraw(SDL_Renderer* renderer, Vector3 CameraPos);
 		void OnEvent(SDL_Event* event);
 		void AddGameObject();
 		GameObject* GetGameObject(int index = 0);

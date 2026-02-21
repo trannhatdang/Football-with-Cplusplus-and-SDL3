@@ -7,7 +7,7 @@ Component::Component(const std::string& name, GameObject* gameObject) : m_name(n
 
 Component::~Component()
 {
-	std::cout << "IM BEING DELETED NOOOOOOOOO" << std::endl;
+
 }
 
 std::string Component::GetName() const
@@ -26,7 +26,7 @@ void Component::OnFixedIterate()
 
 };
 
-void Component::OnDraw(SDL_Renderer* renderer)
+void Component::OnDraw(SDL_Renderer* renderer, Vector3 CameraPos)
 {
 
 };

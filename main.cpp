@@ -18,6 +18,18 @@ static std::chrono::time_point last_iterate_point = std::chrono::system_clock::n
 SDL_Texture* texture;
 int texture_w, texture_h;
 
+Vector3 CameraPos;
+
+Vector3 GetCameraPos()
+{
+	return CameraPos;
+}
+
+static void SetCameraPos(Vector3 pos)
+{
+	CameraPos = pos;
+}
+
 static void ChangeScene(int index)
 {
 	currScene = scenes[index].get();

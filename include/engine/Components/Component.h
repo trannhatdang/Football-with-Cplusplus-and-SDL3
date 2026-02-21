@@ -16,8 +16,9 @@ class Component
 		virtual void OnStart();
 		virtual void OnFixedIterate();
 		virtual void OnIterate() = 0;
-		virtual void OnDraw(SDL_Renderer* renderer);
+		virtual void OnDraw(SDL_Renderer* renderer, Vector3 CameraPos);
 		virtual void OnEvent(SDL_Event* event);
+		virtual std::unique_ptr<Component> copy() = 0;
 		std::string GetName() const;
 };
 
