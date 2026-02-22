@@ -3,18 +3,7 @@
 
 SpriteRenderer::SpriteRenderer(GameObject* gameObject, SDL_Renderer* renderer, const std::string& filepath, SDL_FRect srcrect, SDL_FRect dstrect) : Component("SpriteRenderer", gameObject), m_srcrect(srcrect), m_dstrect(dstrect), filepath(filepath), m_renderer(renderer)
 {
-	SDL_Surface* surface = SDL_LoadPNG(filepath.c_str());
-	if(!surface)
-	{
-		SDL_Log("Could not create surface for texture creation: %s", SDL_GetError());
-	}
-
-	m_texture = SDL_CreateTextureFromSurface(renderer, surface);
-	if(!m_texture)
-	{
-		SDL_Log("Could not create texture: %s", SDL_GetError());
-	}
-	SDL_DestroySurface(surface);
+	m_texture = CreateTextureFromPNG(renderer, filepath);
 }
 
 SpriteRenderer::~SpriteRenderer() 
@@ -34,7 +23,7 @@ void SpriteRenderer::OnIterate()
 
 void SpriteRenderer::OnDraw(SDL_Renderer* renderer)
 {
-	//ugly but works, kinda, i'm not managing that!
+	//i'm not managing that!
 	Vector3 pos = static_cast<Transform*>(this->gameObject->GetTransform())->GetPosition();
 	SDL_Rect viewport;
 	//god what would happen if we go 3d?
@@ -42,11 +31,10 @@ void SpriteRenderer::OnDraw(SDL_Renderer* renderer)
 
 	viewport.x = pos.x - cameraPos.x;
 	viewport.y = pos.y - cameraPos.y;
-	viewport.w = m_texture->w;
-	viewport.h = m_texture->h;
+	viewport.w = m_dstrect.w;
+	viewport.h = m_dstrect.h;
 
-	SDL_SetRenderViewport(renderer, &viewport);
-	SDL_RenderTexture(renderer, m_texture, &m_srcrect, &m_dstrect);
+	DrawTexture(renderer, m_texture, viewport, m_srcrect, m_dstrect);
 }
 
 void SpriteRenderer::OnEvent(SDL_Event* event) 

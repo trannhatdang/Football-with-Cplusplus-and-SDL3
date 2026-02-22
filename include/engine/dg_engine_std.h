@@ -10,4 +10,7 @@
 
 const int ON_COLLISION_ENTER_EVENT = SDL_RegisterEvents(1);
 
+SDL_Texture* CreateTextureFromPNG(SDL_Renderer* renderer, const std::string& filepath);
+void DrawTexture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect viewport, SDL_FRect srcrect, SDL_FRect dstrect);
+
 #endif

@@ -14,7 +14,6 @@ class DG_Texture
 		~DG_Texture();
 		SDL_Texture* GetTexture() const;
 };
-SDL_Texture* CreateTextureFromPNG(SDL_Renderer* renderer, const std::string& filepath);
 
 
 #endif
