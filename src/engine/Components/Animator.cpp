@@ -2,7 +2,7 @@
 
 Animator::Animator(GameObject* obj, SDL_Renderer* renderer) : Component("Animator", obj), m_renderer(renderer)
 {
-
+	m_anyNode = std::make_unique<AnimationNode>();
 }
 
 AnimationNode* Animator::AddAnimation(AnimationNode* prevNode, SDL_Renderer* renderer, const std::string& filepath, int width, int height, int num_frame, int scale, cond_func* cond)
@@ -38,6 +38,8 @@ void Animator::OnIterate()
 		}
 	}
 
+	if(!m_currNode) return;
+
 	for(auto i = 0; i < m_currNode->conds.size(); ++i)
 	{
 		if(m_currNode->conds[i](this->gameObject))
@@ -52,19 +54,20 @@ void Animator::OnIterate()
 
 std::unique_ptr<Component> Animator::copy()
 {
+	return nullptr;
+	
+	//DO NOT USE, IS BROKEN
 	Animator* new_comp = new Animator(gameObject, m_renderer);
 	std::unordered_map<AnimationNode*, bool> hasPrevMap;
 
-	_addAllNextNodeOfThisNode(new_comp, m_anyNode.get(), &hasPrevMap);
+	_addAllNextNodeOfThisNode(new_comp, m_anyNode.get(), new_comp->GetAnyNode(), &hasPrevMap);
 
 	for(auto i = 0; i < m_animations.size(); ++i)
 	{
 		AnimationNode* ptr = m_animations[i].get();
-		_addAllNextNodeOfThisNode(new_comp, ptr, &hasPrevMap);
+		_addAllNextNodeOfThisNode(new_comp, ptr, nullptr, &hasPrevMap);
 	}
 	
-	new_comp->AddAnimation(nullptr, m_renderer, m_anyNode->anim->GetFilepath(), m_anyNode->anim->GetWidth(),
-				m_anyNode->anim->GetHeight(), m_anyNode->anim->GetNumFrames(), m_anyNode->anim->GetScale(), nullptr);
 	for(auto i = 0; i < m_animations.size(); ++i)
 	{
 		AnimationNode* ptr = m_animations[i].get();
@@ -78,14 +81,14 @@ std::unique_ptr<Component> Animator::copy()
 	return std::unique_ptr<Animator>(new_comp);
 }
 
-void Animator::_addAllNextNodeOfThisNode(Animator* animator, AnimationNode* prevNode, std::unordered_map<AnimationNode*, bool>* hasPrevMap)
+void Animator::_addAllNextNodeOfThisNode(Animator* animator, AnimationNode* oldPrevNode, AnimationNode* newPrevNode, std::unordered_map<AnimationNode*, bool>* hasPrevMap)
 {
-	for(auto i = 0; i < prevNode->adj.size(); ++i)
+	for(auto i = 0; i < oldPrevNode->adj.size(); ++i)
 	{
-		auto nextNode = prevNode->adj[i];
-		animator->AddAnimation(prevNode, m_renderer, nextNode->anim->GetFilepath(), nextNode->anim->GetWidth(), 
+		auto nextNode = oldPrevNode->adj[i];
+		animator->AddAnimation(newPrevNode, m_renderer, nextNode->anim->GetFilepath(), nextNode->anim->GetWidth(), 
 				nextNode->anim->GetHeight(), nextNode->anim->GetNumFrames(), nextNode->anim->GetScale(), 
-				prevNode->conds[i]);
+				oldPrevNode->conds[i]);
 		
 		hasPrevMap->insert({nextNode, true});
 	}

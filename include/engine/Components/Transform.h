@@ -14,7 +14,7 @@ class Transform : public Component
 		void OnFixedIterate();
 		void OnIterate();
 		std::unique_ptr<Component> copy();
-		const Vector3& GetPosition() const;
+		Vector3 GetPosition() const;
 		void SetPosition(const Vector3& pos);
 };
 

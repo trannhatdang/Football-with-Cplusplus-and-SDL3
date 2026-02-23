@@ -12,7 +12,7 @@ class Animator : public Component
 		AnimationNode* m_currNode;
 		std::unique_ptr<AnimationNode> m_anyNode;
 		std::vector<std::unique_ptr<AnimationNode>> m_animations;
-		void _addAllNextNodeOfThisNode(Animator* animator, AnimationNode* prevNode, std::unordered_map<AnimationNode*, bool>* hasPrevMap);
+		void _addAllNextNodeOfThisNode(Animator* animator, AnimationNode* oldPrevNode, AnimationNode* newPrevNode, std::unordered_map<AnimationNode*, bool>* hasPrevMap);
 	public:
 		Animator(GameObject* obj, SDL_Renderer* renderer);
 		AnimationNode* AddAnimation(AnimationNode* prevNode, SDL_Renderer* renderer, const std::string& filepath, int width, int height, int num_frame, int scale, cond_func* cond);

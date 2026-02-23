@@ -14,8 +14,6 @@ void Rigidbody::OnFixedIterate()
 	pos += m_velocity;
 	m_velocity += m_acceleration;
 
-	//std::cout << "vel: " << m_velocity << std::endl;
-
 	this->MovePosition(pos);
 	if(m_hasDrag)
 	{

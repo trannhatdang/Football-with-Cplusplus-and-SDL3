@@ -123,6 +123,13 @@ void Vector3f::operator*=(float multipler)
 	this->z *= multipler;
 }
 
+Vector3f::operator Vector3 () const
+{
+	return {this->x > 0 ? (int)ceil(this->x) : (int)floor(this->x),
+		this->y > 0 ? (int)ceil(this->y) : (int)floor(this->y),
+		this->z > 0 ? (int)ceil(this->z) : (int)floor(this->z)};
+}
+
 std::ostream& operator<<(std::ostream& out, const Vector3& rhs)
 {
 	return out << "(" << rhs.x << ", " << rhs.y << ", " << rhs.z << ")";
@@ -131,6 +138,11 @@ std::ostream& operator<<(std::ostream& out, const Vector3& rhs)
 std::ostream& operator<<(std::ostream& out, const Vector3f& rhs)
 {
 	return out << "(" << rhs.x << ", " << rhs.y << ", " << rhs.z << ")";
+}
+
+Vector3 GetVector3One()
+{
+	return {1, 1, 1};
 }
 
 Vector3f GetVector3fZero()

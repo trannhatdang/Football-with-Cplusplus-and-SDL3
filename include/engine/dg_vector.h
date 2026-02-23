@@ -39,10 +39,13 @@ typedef struct Vector3f
 	void operator+=(const Vector3f& other);
 	void operator-=(const Vector3f& other);
 	void operator*=(float multipler);
+
+	operator Vector3 () const;
 } Vector3f;
 std::ostream& operator<<(std::ostream& out, const Vector3& rhs);
 std::ostream& operator<<(std::ostream& out, const Vector3f& rhs);
 
+Vector3 GetVector3One();
 Vector3f GetVector3fZero();
 Vector3f GetMinusVector3f(const Vector3f& vec);
 Vector3f GetVector3fSign(const Vector3f& vec);

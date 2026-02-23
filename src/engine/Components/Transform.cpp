@@ -7,11 +7,11 @@ Transform::Transform(GameObject* gameObject, const Vector3& pos, const Vector3& 
 
 void Transform::OnFixedIterate()
 {
-	//std::cout << m_pos << std::endl;
 }
 
 void Transform::OnIterate()
 {
+
 }
 
 std::unique_ptr<Component> Transform::copy()
@@ -19,7 +19,7 @@ std::unique_ptr<Component> Transform::copy()
 	return std::make_unique<Transform>(gameObject, m_pos, m_rot);
 }
 
-const Vector3& Transform::GetPosition() const
+Vector3 Transform::GetPosition() const
 {
 	return m_pos;
 }
