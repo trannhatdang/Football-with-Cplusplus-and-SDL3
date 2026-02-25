@@ -16,8 +16,7 @@ typedef struct BColliderOff
 typedef struct PointDistInfo
 {
 	bool isIn;
-	bool isX;
-	int dist;
+	Vector3 dist;
 } PointDistInfo;
 
 class BoxCollider : public Component
@@ -35,7 +34,7 @@ class BoxCollider : public Component
 		void OnIterate();
 		void OnDraw(SDL_Renderer* renderer);
 		void OnEvent(SDL_Event* event);
-		void DoCollision(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off);
+		void DoCollision(GameObject* other_obj);
 		std::unique_ptr<Component> copy();
 		BColliderOff GetOffset() const;
 		void SetOffset(const BColliderOff& offset);

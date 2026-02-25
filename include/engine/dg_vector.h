@@ -19,6 +19,7 @@ typedef struct Vector3
 	int x;
 	int y;
 	int z;
+	int sqrMagnitude() const;
 	Vector3 operator+(const Vector3& other);
 	void operator+=(const Vector3f& other);
 	void operator+=(const Vector3& other);

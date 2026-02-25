@@ -1,6 +1,15 @@
 #include "engine/Components/Rigidbody.h"
 #include "engine/GameObject.h"
 
+void Rigidbody::_drag()
+{
+	if(m_velocity.sqrMagnitude() > 0)
+	{
+		auto val = 1 - 0.016 * m_drag;
+		m_velocity *= val;
+	}
+}
+
 Rigidbody::Rigidbody(GameObject* gameObject, bool hasDrag, int drag) : Component("Rigidbody", gameObject), m_hasDrag(hasDrag), m_drag(drag) {}
 
 Rigidbody::~Rigidbody() {}
@@ -28,31 +37,28 @@ void Rigidbody::OnIterate()
 
 }
 
-void Rigidbody::MovePosition(const Vector3& pos)
+
+int Rigidbody::GetMass() const
 {
-	gameObject->GetTransform()->SetPosition(pos);
+	return m_mass;
 }
 
-void Rigidbody::FixPosition()
+Vector3f Rigidbody::GetVelocity() const
 {
-
-}
-
-void Rigidbody::AddForce(const Vector3f& force)
-{
-	m_force_applied += force;
-}
-
-void Rigidbody::_drag()
-{
-	if(m_velocity.sqrMagnitude() > 0)
-	{
-		auto val = 1 - 0.016 * m_drag;
-		m_velocity *= val;
-	}
+	return m_velocity;
 }
 
 std::unique_ptr<Component> Rigidbody::copy()
 {
 	return std::make_unique<Rigidbody>(gameObject);
+}
+
+void Rigidbody::MovePosition(const Vector3& pos)
+{
+	gameObject->GetTransform()->SetPosition(pos);
+}
+
+void Rigidbody::AddForce(const Vector3f& force)
+{
+	m_force_applied += force;
 }

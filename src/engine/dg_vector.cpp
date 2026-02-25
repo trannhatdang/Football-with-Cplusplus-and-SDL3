@@ -6,6 +6,11 @@ Vector3::Vector3(int x, int y, int z) : x(x), y(y), z(z)
 
 }
 
+int Vector3::sqrMagnitude() const
+{
+	return this->x * this->x + this->y * this->y + this->z * this->z;
+}
+
 Vector3 Vector3::operator+(const Vector3& other)
 {
 	Vector3 ans = *this;
