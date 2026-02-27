@@ -28,7 +28,7 @@ static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BCollid
 	return !(a || b || c || d);
 }
 
-static PointDistInfo FindDistanceFromPointToEdgeOfBox(Vector3 pos, Vector3 other_pos, BColliderOff other_off)
+static PointDistInfo FindDistanceFromPointToEdgeOfBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off)
 {
 	int other_box_min_x = other_pos.x;
 	int other_box_max_x = other_pos.x + other_off.w;
@@ -52,6 +52,8 @@ static PointDistInfo FindDistanceFromPointToEdgeOfBox(Vector3 pos, Vector3 other
 	dists.push_back(RDist);
 	dists.push_back(TDist);
 	dists.push_back(BDist);
+
+	printf("LDist: %d; RDist: %d; TDist: %d; BDist: %d\n", LDist, RDist, TDist, BDist);
 
 	int res = 0;
 
@@ -92,10 +94,10 @@ static PointDistInfo FindDirectionToPushAway(Vector3 pos, BColliderOff off, Vect
 	int other_box_min_y = other_pos.y;
 	int other_box_max_y = other_pos.y + other_off.h;
 
-	PointDistInfo vertex0_dist = FindDistanceFromPointToEdgeOfBox(vertex0, other_pos, other_off);
-	PointDistInfo vertex1_dist = FindDistanceFromPointToEdgeOfBox(vertex1, other_pos, other_off);
-	PointDistInfo vertex2_dist = FindDistanceFromPointToEdgeOfBox(vertex2, other_pos, other_off);
-	PointDistInfo vertex3_dist = FindDistanceFromPointToEdgeOfBox(vertex3, other_pos, other_off);
+	PointDistInfo vertex0_dist = FindDistanceFromPointToEdgeOfBox(vertex0, off, other_pos, other_off);
+	PointDistInfo vertex1_dist = FindDistanceFromPointToEdgeOfBox(vertex1, off, other_pos, other_off);
+	PointDistInfo vertex2_dist = FindDistanceFromPointToEdgeOfBox(vertex2, off, other_pos, other_off);
+	PointDistInfo vertex3_dist = FindDistanceFromPointToEdgeOfBox(vertex3, off, other_pos, other_off);
 
 	std::vector<PointDistInfo> ans;
 	ans.reserve(4);
@@ -307,12 +309,13 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir) const
 		}
 	}
 
+	/*
 	std::cout << "i: " << i << std::endl;
 	std::cout << "unit: " << unit_vector << std::endl;
 	std::cout << "new_dir_int: " << new_dir_int << std::endl;
 	std::cout << "old_pos: " << old_pos << std::endl;
 	std::cout << "limit: " << (limit ? "true" : "false") << std::endl;
-	std::cout << "lim: " << lim << std::endl;
+	std::cout << "lim: " << lim << std::endl;*/
 
 	if(collided)
 	{

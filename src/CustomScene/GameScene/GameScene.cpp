@@ -42,7 +42,7 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 
 	gameScene->AddGameObject("Ball2", "Ball");
 	auto ball2 = gameScene->GetGameObject(4);
-	static_cast<Transform*>(ball2->GetTransform())->SetPosition({860, 400, -2});
+	static_cast<Transform*>(ball2->GetTransform())->SetPosition({900, 300, -2});
 	ball2->AddComponent(new SpriteRenderer(ball2, gameScene->GetRenderer(), GetBallSprite(), ballSprRect, ballSprRect));
 	ball2->AddComponent(new BoxCollider(ball2, {48, 48}));
 
