@@ -22,8 +22,9 @@ class Scene
 		void OnDraw(SDL_Renderer* renderer);
 		void OnEvent(SDL_Event* event);
 		void RegisterCollider(BoxCollider* coll);
-		void AddGameObject(const std::string& name = "GameObject", const std::string& tag = "Tag");
+		GameObject* AddGameObject(const std::string& name = "GameObject", const std::string& tag = "Tag");
 		GameObject* GetGameObject(int index = 0);
+		GameObject* GetGameObject(const std::string& name = "GameObject");
 		SDL_Renderer* GetRenderer() const;
 		SDL_Window* GetWindow() const;
 		const std::vector<BoxCollider*>& GetColliders() const;

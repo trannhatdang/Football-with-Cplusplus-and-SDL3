@@ -1,7 +1,7 @@
 #include "Config.h"
 
 const int WINDOW_WIDTH = 1120;
-const int WINDOW_HEIGHT = 160*5;
+const int WINDOW_HEIGHT = 800;
 const std::string PLAYER_FILEPATH = "D:\\DH\\HK252\\FIFA_CLONE (Visual Studio)\\sprites\\megaman-top.png";
 const std::string PLAYER_TWO_FILEPATH = "D:\\DH\\HK252\\FIFA_CLONE (Visual Studio)\\sprites\\megaman-top-2.png";
 const std::string GRASS_FILEPATH = "D:\\DH\\HK252\\FIFA_CLONE (Visual Studio)\\sprites\\grass-big.png";

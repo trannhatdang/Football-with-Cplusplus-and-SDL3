@@ -54,14 +54,31 @@ void Scene::RegisterCollider(BoxCollider* rb)
 	m_colliders.push_back(rb);
 }
 
-void Scene::AddGameObject(const std::string& name, const std::string& tag)
+GameObject* Scene::AddGameObject(const std::string& name, const std::string& tag)
 {
 	this->m_gameObjects.push_back(std::make_unique<GameObject>(this, name, tag));
+
+	return m_gameObjects[m_gameObjects.size()-1].get();
 }
 
 GameObject* Scene::GetGameObject(int index)
 {
+	if(index < 0 || index >= m_gameObjects.size()) return NULL;
 	return this->m_gameObjects[index].get();
+}
+
+GameObject* Scene::GetGameObject(const std::string& name)
+{
+	int size = m_gameObjects.size();
+	for(int i = 0; i < size; ++i)
+	{
+		if(m_gameObjects[i]->GetName() == name)
+		{
+			return m_gameObjects[i].get();
+		}
+	}
+
+	return NULL;
 }
 
 SDL_Renderer* Scene::GetRenderer() const 
