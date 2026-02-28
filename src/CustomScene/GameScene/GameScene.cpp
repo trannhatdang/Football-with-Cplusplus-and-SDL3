@@ -18,21 +18,21 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	tilemap_gb->AddComponent(new Tilemap(tilemap_gb, gameScene->GetRenderer(), GetGrassSpriteSheet(), map, 160, 160));
 
 	auto twall = gameScene->AddGameObject("TWall", "Wall");
-	static_cast<Transform*>(twall->GetTransform())->SetPosition({0, 0, -2});
+	static_cast<Transform*>(twall->GetTransform())->SetPosition({0, -100, -2});
 	twall->AddComponent(new Rigidbody(twall, true, 1, 100000));
-	twall->AddComponent(new BoxCollider(twall, {1120, 10}));
+	twall->AddComponent(new BoxCollider(twall, {1120, 110}));
 
 	auto bwall = gameScene->AddGameObject("BWall", "Wall");
 	static_cast<Transform*>(bwall->GetTransform())->SetPosition({0, 790, -2});
-	bwall->AddComponent(new BoxCollider(bwall, {1120, 10}));
+	bwall->AddComponent(new BoxCollider(bwall, {1120, 110}));
 
 	auto lwall = gameScene->AddGameObject("LWall", "Wall");
-	static_cast<Transform*>(lwall->GetTransform())->SetPosition({0, 10, -2});
-	lwall->AddComponent(new BoxCollider(lwall, {10, 780}));
+	static_cast<Transform*>(lwall->GetTransform())->SetPosition({-100, 10, -2});
+	lwall->AddComponent(new BoxCollider(lwall, {110, 780}));
 
 	auto rwall = gameScene->AddGameObject("RWall", "Wall");
 	static_cast<Transform*>(rwall->GetTransform())->SetPosition({1110, 10, -2});
-	rwall->AddComponent(new BoxCollider(rwall, {10, 780}));
+	rwall->AddComponent(new BoxCollider(rwall, {110, 780}));
 
 	auto player1 = gameScene->AddGameObject("Player1", "Player");
 	static_cast<Transform*>(player1->GetTransform())->SetPosition({100, 300, -2});

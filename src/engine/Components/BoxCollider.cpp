@@ -37,94 +37,7 @@ static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BCollid
 	return !(a || b || c || d);
 }
 
-static PointDistInfo FindDistanceFromPointToEdgeOfBox(Vector3 point_pos, Vector3 box_pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, int offset = 10)
-{
-	int other_box_min_x = other_pos.x;
-	int other_box_max_x = other_pos.x + other_off.w;
-	int other_box_min_y = other_pos.y;
-	int other_box_max_y = other_pos.y + other_off.h;
-
-	std::cout << "finding if point is in other box: " << std::endl;
-	std::cout << point_pos.x << ' ' << other_box_min_x << ' ' << other_box_max_x << std::endl;
-	std::cout << point_pos.y << ' ' << other_box_min_y << ' ' << other_box_max_y << std::endl;
-	if(!PointInBetweenPoints(point_pos.x, other_box_min_x, other_box_max_x) || !PointInBetweenPoints(point_pos.y, other_box_min_y, other_box_max_y))
-	{
-		return {false, {0, 0, 0}};
-	}
-
-	std::vector<int> dists;
-	dists.reserve(4);
-
-	int LDist = other_box_min_x - point_pos.x - offset;
-	int RDist = other_box_max_x - point_pos.x + offset;
-	int TDist = other_box_min_y - point_pos.y - offset;
-	int BDist = other_box_max_y - point_pos.y + offset;
-
-	dists.push_back(LDist);
-	dists.push_back(RDist);
-	dists.push_back(TDist);
-	dists.push_back(BDist);
-
-	Vector3 l_vec = {LDist, 0, 0};
-	Vector3 r_vec = {RDist, 0, 0};
-	Vector3 t_vec = {0, TDist, 0};
-	Vector3 b_vec = {0, BDist, 0};
-
-	std::vector<Vector3> vecs = {l_vec, r_vec, t_vec, b_vec};
-
-	std::cout << l_vec << ' ' << r_vec << ' ' << t_vec << ' ' << b_vec << std::endl;
-
-	//printf("LDist: %d; RDist: %d; TDist: %d; BDist: %d\n", LDist, RDist, TDist, BDist);
-
-	int res = -1;
-
-	for(int i = 0; i < 4; ++i)
-	{
-		if(!CompareBox(box_pos + vecs[i], off, other_pos, other_off, false, true))
-		{
-			res = i;
-			break;
-		}
-	}
-
-	if (res < 0)
-	{
-		return { false, {0, 0, 0} };
-	}
-
-	std::cout << "trying to find correct dir: " << std::endl;
-	for(int i = 0; i < 4; ++i)
-	{
-		std::cout << std::abs(dists[i]) << ' ' << std::abs(dists[res]) << ' ';
-		if((std::abs(dists[i]) < std::abs(dists[res])) && !CompareBox(box_pos + vecs[i], off, other_pos, other_off, false, true))
-		{
-			res = i;
-		}
-	}
-
-	std::cout << std::endl << "correct dir: " << vecs[res] << std::endl;
-
-	switch(res)
-	{
-		case 0:
-			return {true, l_vec};
-			break;
-		case 1:
-			return {true, r_vec};
-			break;
-		case 2:
-			return {true, t_vec};
-			break;
-		case 3:
-			return {true, b_vec};
-			break;
-		default:
-			return {false, {0, 0, 0}};
-			break;
-	}
-}
-
-static Vector3 FindDisplacementVec(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, Vector3 dir)
+Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir, bool debug)
 {
 	const int MAX_ITERATE = 1000000;
 
@@ -134,7 +47,7 @@ static Vector3 FindDisplacementVec(Vector3 pos, BColliderOff off, Vector3 other_
 	{
 		ans += dir;
 
-		if(!CompareBox(pos, off, other_pos, other_off))
+		if(!checkCollision(ans + pos, debug))
 		{
 			break;
 		}
@@ -143,62 +56,24 @@ static Vector3 FindDisplacementVec(Vector3 pos, BColliderOff off, Vector3 other_
 	return ans;
 }
 
-static PointDistInfo FindDirectionToPushAway(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, int offset = 0)
+Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos, bool debug)
 {
-	/*Vector3 vertex0 = pos;
-	Vector3 vertex1 = pos + Vector3(off.w, 0, 0);
-	Vector3 vertex2 = pos + Vector3(off.w, off.h, 0);
-	Vector3 vertex3 = pos + Vector3(0, off.h, 0);
+	Vector3 l_vec = findDisplacementVec(pos, {-1, 0, 0});
+	Vector3 tl_vec = findDisplacementVec(pos, {-1, -1, 0});
+	Vector3 t_vec = findDisplacementVec(pos, {0, -1, 0});
+	Vector3 tr_vec = findDisplacementVec(pos, {1, -1, 0});
+	Vector3 r_vec = findDisplacementVec(pos, {1, 0, 0});
+	Vector3 rb_vec = findDisplacementVec(pos, {1, 1, 0});
+	Vector3 b_vec = findDisplacementVec(pos, {0, 1, 0});
+	Vector3 bl_vec = findDisplacementVec(pos, {-1, 1, 0});
 
-	std::cout << "ver0: " << std::endl;
-	PointDistInfo vertex0_dist = FindDistanceFromPointToEdgeOfBox(vertex0, pos, off, other_pos, other_off, offset);
-	std::cout << "ver1: " << std::endl;
-	PointDistInfo vertex1_dist = FindDistanceFromPointToEdgeOfBox(vertex1, pos, off, other_pos, other_off, offset);
-	std::cout << "ver2: " << std::endl;
-	PointDistInfo vertex2_dist = FindDistanceFromPointToEdgeOfBox(vertex2, pos, off, other_pos, other_off, offset);
-	std::cout << "ver3: " << std::endl;
-	PointDistInfo vertex3_dist = FindDistanceFromPointToEdgeOfBox(vertex3, pos, off, other_pos, other_off, offset);
-
-	std::cout << "ver0: " << vertex0_dist.isIn << ' ' << vertex0_dist.dist << std::endl;
-	std::cout << "ver1: " << vertex1_dist.isIn << ' ' << vertex1_dist.dist << std::endl;
-	std::cout << "ver2: " << vertex2_dist.isIn << ' ' << vertex2_dist.dist << std::endl;
-	std::cout << "ver3: " << vertex3_dist.isIn << ' ' << vertex3_dist.dist << std::endl;
-
-	std::vector<PointDistInfo> ans;
-	ans.reserve(4);
-
-	if(vertex0_dist.isIn) ans.push_back(vertex0_dist);
-	if(vertex1_dist.isIn) ans.push_back(vertex1_dist);
-	if(vertex2_dist.isIn) ans.push_back(vertex2_dist);
-	if(vertex3_dist.isIn) ans.push_back(vertex3_dist);
-
-	int min_ind = 0;
-	int size = ans.size();
-
-	if(size == 0)
-	{
-		return {false, {0, 0, 0}};
-	}
-
-	for(int i = 0; i < size - 1; ++i)
-	{
-		if(ans[min_ind].dist.sqrMagnitude() > ans[i].dist.sqrMagnitude())
-		{
-			min_ind = i;
-		}
-	}
-
-	return ans[min_ind];*/
-
-	Vector3 l_vec = FindDisplacementVec(pos, off, other_pos, other_off, {-1, 0, 0});
-	Vector3 r_vec = FindDisplacementVec(pos, off, other_pos, other_off, {1, 0, 0});
-	Vector3 t_vec = FindDisplacementVec(pos, off, other_pos, other_off, {0, -1, 0});
-	Vector3 b_vec = FindDisplacementVec(pos, off, other_pos, other_off, {0, 1, 0});
-
-	std::vector<Vector3> vecs = {l_vec, r_vec, t_vec, b_vec};
+	std::vector<Vector3> vecs = {
+		l_vec, tl_vec, t_vec, tr_vec,
+		r_vec, rb_vec, b_vec, bl_vec
+	};
 
 	int min_index = 0;
-	for(int i = 1; i < 4; ++i)
+	for(int i = 0; i < 8; ++i)
 	{
 		if(vecs[min_index].sqrMagnitude() > vecs[i].sqrMagnitude())
 		{
@@ -206,19 +81,12 @@ static PointDistInfo FindDirectionToPushAway(Vector3 pos, BColliderOff off, Vect
 		}
 	}
 
-	return {true, vecs[min_index]};
+	std::cout << vecs[min_index] << std::endl;
+
+	return vecs[min_index];
 }
 
-void BoxCollider::moveToFixedPosition(Vector3 pos, PointDistInfo info)
-{
-	if(!info.isIn) return;
-
-	Transform* tfs = gameObject->GetTransform();
-	pos += info.dist;
-	tfs->SetPosition(pos);
-}
-
-bool BoxCollider::checkCollision(const Vector3& pos) const
+bool BoxCollider::checkCollision(const Vector3& pos, bool debug) const
 {
 	auto colls = gameObject->GetScene()->GetColliders();
 	int size = colls.size();
@@ -233,9 +101,16 @@ bool BoxCollider::checkCollision(const Vector3& pos) const
 		Vector3 other_pos = ((Transform*)(other_obj->GetTransform()))->GetPosition();
 		BColliderOff other_off = other_col->GetOffset();
 
-		if(!CompareBox(pos, off, other_pos, other_off)) continue; //No collision
+		if(debug) 
+		{
+			std::cout << pos << off.w << ' ' << off.h << std::endl
+				<< other_pos << other_off.w << ' ' << other_off.h << std::endl;
+		}
 
-		return true;
+		if(CompareBox(pos, off, other_pos, other_off))
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -328,15 +203,10 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 
 	if(CompareBox(pos, off, other_pos, other_off, true))
 	{
-		std::cout << gameObject->GetName() << std::endl;
-		auto dir_info = FindDirectionToPushAway(pos, off, other_pos, other_off, 10);
-		if(dir_info.isIn)
-		{
-			std::cout << "final dist: " << dir_info.dist << std::endl;
-			rb->MovePosition(pos + dir_info.dist);
+		auto dir_info = findDirectionToPushAway(pos);
+		rb->MovePosition(pos + dir_info);
 
-			return;
-		}
+		return;
 	}
 
 	if(other_rb == NULL)  return; //pushes itself away from stationary object
