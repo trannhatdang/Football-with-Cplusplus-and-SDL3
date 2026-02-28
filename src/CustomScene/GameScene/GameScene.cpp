@@ -27,12 +27,12 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	bwall->AddComponent(new BoxCollider(bwall, {1120, 10}));
 
 	auto lwall = gameScene->AddGameObject("LWall", "Wall");
-	static_cast<Transform*>(lwall->GetTransform())->SetPosition({0, 0, -2});
-	lwall->AddComponent(new BoxCollider(lwall, {10, 800}));
+	static_cast<Transform*>(lwall->GetTransform())->SetPosition({0, 10, -2});
+	lwall->AddComponent(new BoxCollider(lwall, {10, 780}));
 
 	auto rwall = gameScene->AddGameObject("RWall", "Wall");
-	static_cast<Transform*>(rwall->GetTransform())->SetPosition({1110, 0, -2});
-	rwall->AddComponent(new BoxCollider(rwall, {10, 800}));
+	static_cast<Transform*>(rwall->GetTransform())->SetPosition({1110, 10, -2});
+	rwall->AddComponent(new BoxCollider(rwall, {10, 780}));
 
 	auto player1 = gameScene->AddGameObject("Player1", "Player");
 	static_cast<Transform*>(player1->GetTransform())->SetPosition({100, 300, -2});

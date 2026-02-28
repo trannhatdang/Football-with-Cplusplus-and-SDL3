@@ -57,6 +57,7 @@ Vector3f Vector3f_Zero();
 Vector3f Vector3f_GetUnitVector(const Vector3f& vec);
 Vector3f Vector3f_Sqrt(const Vector3f& vec);
 Vector3f Vector3f_GetAbs(const Vector3f& vec);
+Vector3f Vector3f_Clamp(const Vector3f& vec, const Vector3f& min, const Vector3f& max);
 Vector3f GetMinusVector3f(const Vector3f& vec);
 Vector3f GetVector3fSign(const Vector3f& vec);
 

@@ -28,7 +28,7 @@ void Rigidbody::OnFixedIterate()
 	Vector3 pos = gameObject->GetTransform()->GetPosition();
 
 	m_acceleration = m_force_applied / m_mass;
-	m_velocity += m_acceleration;
+	m_velocity = Vector3f_Clamp(m_velocity + m_acceleration, m_min_vel, m_max_vel);
 
 	if(std::round(m_velocity.magnitude()) == 0) return;
 
@@ -43,12 +43,12 @@ void Rigidbody::OnFixedIterate()
 	}
 
 	this->MovePosition(pos);
+	m_acceleration = Vector3f_Zero();
+	m_force_applied = Vector3f_Zero();
 	if(m_hasDrag)
 	{
 		_drag();
 	}
-	m_acceleration = Vector3f_Zero();
-	m_force_applied = Vector3f_Zero();
 }
 
 void Rigidbody::OnIterate()
@@ -69,8 +69,7 @@ Vector3f Rigidbody::GetVelocity() const
 
 void Rigidbody::SetVelocity(const Vector3f& vec)
 {
-	if(gameObject->GetName() == "Ball") std::cout << "setting vel: " << vec << std::endl;
-	m_velocity = vec;
+	m_velocity = Vector3f_Clamp(vec, m_min_vel, m_max_vel);
 }	
 
 std::unique_ptr<Component> Rigidbody::copy()

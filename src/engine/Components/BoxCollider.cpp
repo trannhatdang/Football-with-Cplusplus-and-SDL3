@@ -8,12 +8,23 @@ static bool PointInBetweenPoints(int in, int l, int r)
 	return in >= l && in <= r;
 }
 
-static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off)
+static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, bool can_equal = false)
 {
-	bool a = pos.x > other_pos.x + other_off.w; //left of it is to the right of other's right
-	bool b = pos.x + off.w < other_pos.x; //right of it is to the left of other's left
-	bool c = pos.y > other_pos.y + other_off.h; //top of it is under other
-	bool d = pos.y + off.h < other_pos.y; //bottom of it is over other
+	bool a = false, b = false, c = false, d = false;
+	if(can_equal)
+	{
+		a = pos.x >= other_pos.x + other_off.w; //left of it is to the right of other's right
+		b = pos.x + off.w <= other_pos.x; //right of it is to the left of other's left
+		c = pos.y >= other_pos.y + other_off.h; //top of it is under other
+		d = pos.y + off.h <= other_pos.y; //bottom of it is over other
+	}
+	else
+	{
+		a = pos.x > other_pos.x + other_off.w; //left of it is to the right of other's right
+		b = pos.x + off.w < other_pos.x; //right of it is to the left of other's left
+		c = pos.y > other_pos.y + other_off.h; //top of it is under other
+		d = pos.y + off.h < other_pos.y; //bottom of it is over other
+	}
 
 	return !(a || b || c || d);
 }
@@ -102,9 +113,9 @@ static PointDistInfo FindDirectionToPushAway(Vector3 pos, BColliderOff off, Vect
 
 	for(int i = 0; i < size - 1; ++i)
 	{
-		if(ans[i].dist.sqrMagnitude() < ans[i+1].dist.sqrMagnitude())
+		if(ans[min_ind].dist.sqrMagnitude() < ans[i].dist.sqrMagnitude())
 		{
-			min_ind = i+1;
+			min_ind = i;
 		}
 	}
 
@@ -228,10 +239,13 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3 other_pos = other_obj->GetTransform()->GetPosition();
 	BColliderOff other_off = static_cast<BoxCollider*>(other_obj->GetComponent("BoxCollider"))->GetOffset();
 
-	auto dir_info = FindDirectionToPushAway(pos, off, other_pos, other_off);
-	if(dir_info.isIn)
+	if(CompareBox(pos, off, other_pos, other_off, true))
 	{
-		rb->MovePosition(pos + dir_info.dist);
+		auto dir_info = FindDirectionToPushAway(pos, off, other_pos, other_off);
+		if(dir_info.isIn)
+		{
+			rb->MovePosition(pos + dir_info.dist);
+		}
 	}
 
 	if(other_rb == NULL)  return; //pushes itself away from stationary object
@@ -246,9 +260,8 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	//Vector3f other_vel_after = (2 * mass)/(mass + other_mass) * vel + (other_mass - mass)/(mass + other_mass) * other_vel;
 	
 	std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
-	std::cout << gameObject->GetName() << ' ' << mass << ' ' << other_mass << std::endl;
 	std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
-	rb->SetVelocity(vel_after);
+	rb->SetVelocity(vel_after * 0.9f);
 }
 
 void BoxCollider::Collide(GameObject* other_obj)
@@ -333,18 +346,15 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir) const
 	if(i == MAX_ITERATE - 1)
 	{
 		std::cout << "CheckPath happened too many times, check BoxCollider" << std::endl;
-		if(gameObject->GetName() == "Ball") std::cout << "lim: " << lim << std::endl;
 		return lim;
 	}
 
 	if(collided)
 	{
-		if(gameObject->GetName() == "Ball") std::cout << "new_pos: " << new_pos << std::endl;
 		return new_pos;
 	}
 	else
 	{
-		if(gameObject->GetName() == "Ball") std::cout << "lim: " << lim << std::endl;
 		return lim;
 	}
 }

@@ -12,6 +12,8 @@ class Rigidbody : public Component
 		Vector3f m_acceleration = {0, 0, 0};
 		Vector3f m_velocity = {0, 0, 0};
 		Vector3f m_force_applied = {0, 0, 0};
+		Vector3f m_max_vel = {1000, 1000, 1000};
+		Vector3f m_min_vel = {-1000, -1000, -1000};
 		Vector3 m_last_pos = {0, 0, 0};
 		int m_mass = 1;
 		int m_drag = 1;

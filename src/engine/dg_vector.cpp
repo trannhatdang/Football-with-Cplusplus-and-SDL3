@@ -212,6 +212,15 @@ Vector3f Vector3f_GetAbs(const Vector3f& vec)
 	return {std::abs(vec.x), std::abs(vec.y), std::abs(vec.z)};
 }
 
+Vector3f Vector3f_Clamp(const Vector3f& vec, const Vector3f& min, const Vector3f& max)
+{
+	return {
+		std::max(std::min(vec.x, max.x), min.x),
+		std::max(std::min(vec.y, max.y), min.y),
+		std::max(std::min(vec.z, max.z), min.z)
+	};
+}
+
 Vector3f GetMinusVector3f(const Vector3f& vec)
 {
 	return Vector3f{-vec.x, -vec.y, -vec.z};
