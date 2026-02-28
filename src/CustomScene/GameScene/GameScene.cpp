@@ -19,7 +19,7 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 
 	auto twall = gameScene->AddGameObject("TWall", "Wall");
 	static_cast<Transform*>(twall->GetTransform())->SetPosition({0, 0, -2});
-	twall->AddComponent(new Rigidbody(twall, true, 1000));
+	twall->AddComponent(new Rigidbody(twall, true, 1, 100000));
 	twall->AddComponent(new BoxCollider(twall, {1120, 10}));
 
 	auto bwall = gameScene->AddGameObject("BWall", "Wall");
@@ -37,14 +37,14 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	auto player1 = gameScene->AddGameObject("Player1", "Player");
 	static_cast<Transform*>(player1->GetTransform())->SetPosition({100, 300, -2});
 	player1->AddComponent(new SpriteRenderer(player1, gameScene->GetRenderer(), GetPlayerSpriteSheet(), playerSprRect, {0, 0, 40, 40}));
-	player1->AddComponent(new Rigidbody(player1, true, 6));
+	player1->AddComponent(new Rigidbody(player1, true, 100, 60));
 	player1->AddComponent(new BoxCollider(player1, {40, 40}));
-	player1->AddComponent(new Movement(player1, 5.0f, true, true));
+	player1->AddComponent(new Movement(player1, 50.0f, true, true));
 
 	auto player2 = gameScene->AddGameObject("Player2", "Player");
 	static_cast<Transform*>(player2->GetTransform())->SetPosition({1000, 300, -2});
 	player2->AddComponent(new SpriteRenderer(player2, gameScene->GetRenderer(), GetPlayerTwoSpriteSheet(), playerSprRect, {0, 0, 40, 40}));
-	player2->AddComponent(new Rigidbody(player2, true, 6));
+	player2->AddComponent(new Rigidbody(player2, true, 1, 60));
 	player2->AddComponent(new BoxCollider(player2, {40, 40}));
 	player2->AddComponent(new Movement(player2, 5.0f, true, false));
 

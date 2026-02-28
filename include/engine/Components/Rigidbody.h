@@ -19,7 +19,7 @@ class Rigidbody : public Component
 
 		void _drag();
 	public:
-		Rigidbody(GameObject* gameObject, bool hasDrag = true, int drag = 1);
+		Rigidbody(GameObject* gameObject, bool hasDrag = true, int drag = 1, int mass = 1);
 		~Rigidbody();
 		void OnFixedIterate();
 		void OnIterate();

@@ -29,8 +29,8 @@ void SpriteRenderer::OnDraw(SDL_Renderer* renderer)
 	//god what would happen if we go 3d?
 	Vector3 cameraPos = GetCameraPos();
 
-	viewport.x = pos.x - cameraPos.x;
-	viewport.y = pos.y - cameraPos.y;
+	viewport.x = std::min(std::max(pos.x - cameraPos.x, -10000), 10000);
+	viewport.y = std::min(std::max(pos.y - cameraPos.y, -10000), 10000);
 	viewport.w = m_dstrect.w;
 	viewport.h = m_dstrect.h;
 

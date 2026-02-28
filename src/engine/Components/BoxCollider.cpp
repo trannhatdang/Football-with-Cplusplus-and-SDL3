@@ -257,7 +257,7 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3f other_vel = other_rb->GetVelocity();
 
 	//https://en.wikipedia.org/wiki/Elastic_collision
-	Vector3f vel_after = (mass - other_mass)/(mass + other_mass) * vel + (2 * other_mass)/(mass + other_mass) * other_vel;
+	Vector3f vel_after = (mass - other_mass * 1.0f)/(mass + other_mass * 1.0f) * vel + (2.0f * other_mass)/(mass + other_mass * 1.0f) * other_vel;
 	//Vector3f other_vel_after = (2 * mass)/(mass + other_mass) * vel + (other_mass - mass)/(mass + other_mass) * other_vel;
 	
 	/*
@@ -281,9 +281,10 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3f acc = vel_after - vel;
 	Vector3f force_diff = acc * mass;
 
-	//std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
-	//std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
-	std::cout << "Adding Force to " << gameObject->GetName() << " with " << force_diff << std::endl;
+	std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
+	std::cout << gameObject->GetName() << ' ' << mass << ' ' << other_mass << std::endl;
+	std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
+	//std::cout << "Adding Force to " << gameObject->GetName() << " with " << force_diff << std::endl;
 	rb->AddForce(force_diff);
 }
 
@@ -327,7 +328,9 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir) const
 	bool collided = false;
 	int i = 0;
 
-	const int MAX_ITERATE = 10e4;
+	//std::cout << "unit vector: " << unit_vector << std::endl;
+
+	const int MAX_ITERATE = 100000000;
 
 	for(i = 1; i < MAX_ITERATE; ++i)
 	{
@@ -358,26 +361,29 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir) const
 		}
 	}
 
-	/*std::cout << "i: " << i << std::endl;
+	/*
+	std::cout << "check path iterated: " << i << std::endl;
 	std::cout << "unit: " << unit_vector << std::endl;
 	std::cout << "new_dir_int: " << new_dir_int << std::endl;
 	std::cout << "old_pos: " << old_pos << std::endl;
 	std::cout << "limit: " << (limit ? "true" : "false") << std::endl;
 	std::cout << "lim: " << lim << std::endl;*/
 
-
 	if(i == MAX_ITERATE - 1)
 	{
-		std::cout << "CheckPath happened too many times, check BoxCollider" << std::endl;;
+		std::cout << "CheckPath happened too many times, check BoxCollider" << std::endl;
+		if(gameObject->GetName() == "Ball") std::cout << "lim: " << lim << std::endl;
 		return lim;
 	}
 
 	if(collided)
 	{
+		if(gameObject->GetName() == "Ball") std::cout << "new_pos: " << new_pos << std::endl;
 		return new_pos;
 	}
 	else
 	{
+		if(gameObject->GetName() == "Ball") std::cout << "lim: " << lim << std::endl;
 		return lim;
 	}
 }
