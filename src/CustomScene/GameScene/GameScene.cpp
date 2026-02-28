@@ -44,7 +44,7 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	auto player2 = gameScene->AddGameObject("Player2", "Player");
 	static_cast<Transform*>(player2->GetTransform())->SetPosition({1000, 300, -2});
 	player2->AddComponent(new SpriteRenderer(player2, gameScene->GetRenderer(), GetPlayerTwoSpriteSheet(), playerSprRect, {0, 0, 40, 40}));
-	player2->AddComponent(new Rigidbody(player2, true, 1, 60));
+	player2->AddComponent(new Rigidbody(player2, true, 5, 60));
 	player2->AddComponent(new BoxCollider(player2, {40, 40}));
 	player2->AddComponent(new Movement(player2, 5.0f, true, false));
 

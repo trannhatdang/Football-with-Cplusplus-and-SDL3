@@ -16,7 +16,7 @@ void Rigidbody::_drag()
 	}
 }
 
-Rigidbody::Rigidbody(GameObject* gameObject, bool hasDrag, int drag, int mass) : Component("Rigidbody", gameObject), m_hasDrag(hasDrag), m_drag(drag), m_mass(mass)
+Rigidbody::Rigidbody(GameObject* gameObject, bool hasDrag, int drag, int mass) : Component("Rigidbody", gameObject), m_mass(mass), m_drag(drag), m_hasDrag(hasDrag)
 {
 
 }
@@ -25,18 +25,12 @@ Rigidbody::~Rigidbody() {}
 
 void Rigidbody::OnFixedIterate()
 {
-
-	if(m_hasDrag)
-	{
-		_drag();
-	}
 	Vector3 pos = gameObject->GetTransform()->GetPosition();
 
 	m_acceleration = m_force_applied / m_mass;
 	m_velocity += m_acceleration;
 
 	if(std::round(m_velocity.magnitude()) == 0) return;
-	//std::cout << "vel: " << std::round(m_velocity.magnitude()) << std::endl;
 
 	BoxCollider* coll = (BoxCollider*)gameObject->GetComponent("BoxCollider");
 	if(coll && m_velocity.magnitude() < 10e3) //just, let it through if it wants to go that bad
@@ -49,6 +43,10 @@ void Rigidbody::OnFixedIterate()
 	}
 
 	this->MovePosition(pos);
+	if(m_hasDrag)
+	{
+		_drag();
+	}
 	m_acceleration = Vector3f_Zero();
 	m_force_applied = Vector3f_Zero();
 }
@@ -71,6 +69,7 @@ Vector3f Rigidbody::GetVelocity() const
 
 void Rigidbody::SetVelocity(const Vector3f& vec)
 {
+	if(gameObject->GetName() == "Ball") std::cout << "setting vel: " << vec << std::endl;
 	m_velocity = vec;
 }	
 
@@ -81,7 +80,6 @@ std::unique_ptr<Component> Rigidbody::copy()
 
 void Rigidbody::MovePosition(const Vector3& pos)
 {
-	if(gameObject->GetName() == "Ball") std::cout << pos << std::endl;
 	gameObject->GetTransform()->SetPosition(pos);
 }
 

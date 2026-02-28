@@ -10,16 +10,6 @@ static bool PointInBetweenPoints(int in, int l, int r)
 
 static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off)
 {
-	int box_min_x = pos.x;
-	int box_max_x = pos.x + off.w;
-	int box_min_y = pos.y;
-	int box_max_y = pos.y + off.h;
-
-	int other_box_min_x = other_pos.x;
-	int other_box_max_x = other_pos.x + other_off.w;
-	int other_box_min_y = other_pos.y;
-	int other_box_max_y = other_pos.y + other_off.h;
-
 	bool a = pos.x > other_pos.x + other_off.w; //left of it is to the right of other's right
 	bool b = pos.x + off.w < other_pos.x; //right of it is to the left of other's left
 	bool c = pos.y > other_pos.y + other_off.h; //top of it is under other
@@ -88,11 +78,6 @@ static PointDistInfo FindDirectionToPushAway(Vector3 pos, BColliderOff off, Vect
 	Vector3 vertex1 = pos + Vector3(off.w, 0, 0);
 	Vector3 vertex2 = pos + Vector3(off.w, off.h, 0);
 	Vector3 vertex3 = pos + Vector3(0, off.h, 0);
-
-	int other_box_min_x = other_pos.x;
-	int other_box_max_x = other_pos.x + other_off.w;
-	int other_box_min_y = other_pos.y;
-	int other_box_max_y = other_pos.y + other_off.h;
 
 	PointDistInfo vertex0_dist = FindDistanceFromPointToEdgeOfBox(vertex0, off, other_pos, other_off);
 	PointDistInfo vertex1_dist = FindDistanceFromPointToEdgeOfBox(vertex1, off, other_pos, other_off);
@@ -179,7 +164,7 @@ void BoxCollider::checkCollisionOfCurr()
 	}
 }
 
-BoxCollider::BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger) : Component("BoxCollider", gameObject), m_offset(offset), m_trigger(isTrigger) 
+BoxCollider::BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger) : Component("BoxCollider", gameObject), m_trigger(isTrigger), m_offset(offset) 
 {
 	gameObject->GetScene()->RegisterCollider(this);
 }
@@ -260,32 +245,10 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3f vel_after = (mass - other_mass * 1.0f)/(mass + other_mass * 1.0f) * vel + (2.0f * other_mass)/(mass + other_mass * 1.0f) * other_vel;
 	//Vector3f other_vel_after = (2 * mass)/(mass + other_mass) * vel + (other_mass - mass)/(mass + other_mass) * other_vel;
 	
-	/*
-	Vector3f kinetic_after = 0.5f * mass * (vel_after * vel_after);
-	Vector3f force_diff = Vector3f_GetAbs(kinetic_after - kinetic);
-	if(vel_after.x - vel.x < 0.0f)
-	{
-		force_diff.x = -1.0f * force_diff.x;
-	}
-
-	if(vel_after.y - vel.y < 0.0f)
-	{
-		force_diff.y = -1.0f * force_diff.y;
-	}
-
-	if(vel_after.z - vel.z < 0.0f)
-	{
-		force_diff.z = -1.0f * force_diff.z;
-	}*/
-
-	Vector3f acc = vel_after - vel;
-	Vector3f force_diff = acc * mass;
-
 	std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
 	std::cout << gameObject->GetName() << ' ' << mass << ' ' << other_mass << std::endl;
 	std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
-	//std::cout << "Adding Force to " << gameObject->GetName() << " with " << force_diff << std::endl;
-	rb->AddForce(force_diff);
+	rb->SetVelocity(vel_after);
 }
 
 void BoxCollider::Collide(GameObject* other_obj)
@@ -322,8 +285,6 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir) const
 	Vector3f new_dir = Vector3f_Zero();
 	Vector3 new_dir_int = {0, 0, 0};
 	Vector3f unit_vector = Vector3f_GetUnitVector(dir);
-	bool xPositive = dir.x > 0;
-	bool yPositive = dir.y > 0;
 	bool limit = false;
 	bool collided = false;
 	int i = 0;
