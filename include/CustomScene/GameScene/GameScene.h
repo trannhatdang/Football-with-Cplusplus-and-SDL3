@@ -7,6 +7,7 @@
 #include "engine/Components/Tilemap.h"
 #include "engine/Components/Animator.h"
 #include "engine/Components/BoxCollider.h"
+#include "Goal.h"
 #include "Controller.h"
 #include "Movement.h"
 #include "Config.h"

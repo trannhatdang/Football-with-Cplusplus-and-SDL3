@@ -4,6 +4,8 @@
 #include <chrono>
 #include <iostream>
 
+typedef std::chrono::time_point<std::chrono::system_clock> dg_time;
+
 void DGTime_recordDeltaTime();
 void DGTime_stopRecordDeltaTime();
 float DGTime_deltaTime();

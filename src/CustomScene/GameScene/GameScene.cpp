@@ -72,6 +72,19 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	rwall->AddComponent(new Rigidbody(rwall, true, 1, 100000));
 	rwall->AddComponent(new BoxCollider(rwall, {10010, 780}));
 
+	auto gameManagerObj = gameScene->AddGameObject("GameManager", "GameManager");
+	GameManager* gameManagerComp = static_cast<GameManager*>(gameManagerObj->AddComponent(new GameManager(gameManagerObj)));
+
+	auto goal1 = gameScene->AddGameObject("Goal1", "Goal");
+	goal1->AddComponent(new Goal(goal1, gameManagerComp));
+	goal1->AddComponent(new BoxCollider(goal1, {80, 160}));
+	goal1->GetTransform()->SetPosition({ 0, 160 * 3 });
+
+	auto goal2 = gameScene->AddGameObject("Goal2", "Goal");
+	goal2->AddComponent(new Goal(goal2, gameManagerComp));
+	goal2->AddComponent(new BoxCollider(goal2, {80, 160}));
+	goal2->GetTransform()->SetPosition({ 160 * 7 + 80, 160 * 3 });
+
 	//players
 	auto striker1 = gameScene->AddGameObject("Striker1", "Player");
 	static_cast<Transform*>(striker1->GetTransform())->SetPosition({500 - 20, 400 - 20, -2});
@@ -244,6 +257,6 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 
 	auto controller2 = gameScene->AddGameObject("Controller2", "Controller");
 	controller2->AddComponent(new Controller(controller2, {striker2_movement, midfielder20_movement, midfielder21_movement, defender2_movement, goalkeeper2_movement}, SDLK_RSHIFT));
-
+	
 
 }
