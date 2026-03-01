@@ -1,9 +1,10 @@
 #include "CustomScene/GameScene/Movement.h"
 #include "engine/GameObject.h"
 
-Movement::Movement(GameObject* obj, float speed, bool haveControl, bool playerOne) : Component("Movement", obj), m_speed(speed), m_haveControl(haveControl), m_playerOne(playerOne)
+Movement::Movement(GameObject* obj, SDL_Renderer* renderer, float speed, bool haveControl, bool playerOne) : Component("Movement", obj), m_speed(speed), m_haveControl(haveControl), m_playerOne(playerOne)
 {
-
+	m_selected_arrow = CreateTextureFromPNG(renderer, GetSelectedArrowSprite());
+	m_unselected_arrow = CreateTextureFromPNG(renderer, GetUnselectedArrowSprite());
 }
 
 Movement::~Movement()
@@ -32,6 +33,7 @@ void Movement::OnFixedIterate()
 
 void Movement::OnIterate()
 {
+
 }
 
 void Movement::OnEvent(SDL_Event* event)
@@ -48,9 +50,38 @@ void Movement::OnEvent(SDL_Event* event)
 	}
 }
 
+void Movement::OnDraw(SDL_Renderer* renderer)
+{
+	SDL_FRect dstrect = static_cast<SpriteRenderer*>(gameObject->GetComponent("SpriteRenderer"))->GetDstRect();
+	Vector3 pos = gameObject->GetTransform()->GetPosition() + Vector3(dstrect.w/2, -20, 0);
+
+	SDL_FRect viewport;
+	viewport.x = pos.x;
+	viewport.y = pos.y;
+	viewport.w = 10;
+	viewport.h = 10;
+
+	DrawTexture(renderer, m_texture, viewport, m_srcrect, m_dstrect);
+}
+
+bool Movement::GetControl() const
+{
+	return m_haveControl;
+}
+
 void Movement::SetControl()
 {
 	m_haveControl = !m_haveControl;
+}
+
+bool Movement::GetCursor() const
+{
+	return m_cursor;
+}
+
+void Movement::SetCursor()
+{
+	m_cursor = !m_cursor;
 }
 
 void Movement::PlayerOneControls(SDL_Event* event)

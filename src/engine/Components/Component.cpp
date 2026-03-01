@@ -40,6 +40,10 @@ void Component::OnTriggerEnter(GameObject* other)
 
 }
 
+GameObject* Component::GetGameObject() const
+{
+	return gameObject;
+}
 
 std::string Component::GetName() const
 {

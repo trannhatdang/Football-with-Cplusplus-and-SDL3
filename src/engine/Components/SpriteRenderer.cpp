@@ -46,3 +46,8 @@ std::unique_ptr<Component> SpriteRenderer::copy()
 {
 	return std::make_unique<SpriteRenderer>(gameObject, m_renderer, filepath, m_srcrect, m_dstrect);
 }
+
+SDL_FRect SpriteRenderer::GetDstRect() const
+{
+	return m_dstrect;
+}

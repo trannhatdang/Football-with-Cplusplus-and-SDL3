@@ -131,9 +131,13 @@ Component* GameObject::CopyComponent(const std::unique_ptr<Component>& component
 	{
 		m_components.push_back(component->copy());
 		m_comp_map.insert({component->GetName(), m_components.back().get()});
-		m_components[m_components.size() - 1].get();
+		auto ans = m_components[m_components.size() - 1].get();
+
+		if(ans)
+		{
+			return ans;
+		}
 	}
 	return nullptr;
-
 }
 

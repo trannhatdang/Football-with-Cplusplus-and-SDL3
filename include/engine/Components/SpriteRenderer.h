@@ -23,6 +23,8 @@ class SpriteRenderer : public Component
 		void OnDraw(SDL_Renderer* renderer);
 		void OnEvent(SDL_Event* event);
 		std::unique_ptr<Component> copy();
+
+		SDL_FRect GetDstRect() const;
 };
 
 #endif

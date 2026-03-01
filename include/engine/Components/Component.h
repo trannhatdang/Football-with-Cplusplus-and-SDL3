@@ -21,6 +21,7 @@ class Component
 		virtual void OnCollisionEnter(GameObject* other);
 		virtual void OnTriggerEnter(GameObject* other);
 		virtual std::unique_ptr<Component> copy() = 0;
+		GameObject* GetGameObject() const;
 		std::string GetName() const;
 };
 

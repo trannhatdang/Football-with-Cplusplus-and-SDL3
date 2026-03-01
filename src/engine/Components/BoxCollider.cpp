@@ -10,13 +10,6 @@ static bool PointInBetweenPoints(int in, int l, int r)
 
 static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, bool can_equal = false, bool debug = false)
 {
-
-	if(debug)
-	{
-		std::cout << "comparing box: " << std::endl;
-		std::cout << pos << off.w << ' ' << off.h << std::endl;
-		std::cout << other_pos << other_off.w << ' ' << other_off.h << std::endl;
-	}
 	bool a = false, b = false, c = false, d = false;
 	if(can_equal)
 	{
@@ -37,7 +30,7 @@ static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BCollid
 	return !(a || b || c || d);
 }
 
-Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir, bool debug) const
+Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir) const
 {
 	const int MAX_ITERATE = 1000000;
 
@@ -47,7 +40,7 @@ Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir,
 	{
 		ans += dir;
 
-		if(!checkCollision(ans + pos, debug))
+		if(!checkCollision(ans + pos))
 		{
 			break;
 		}
@@ -56,7 +49,7 @@ Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir,
 	return ans;
 }
 
-Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos, bool debug) const
+Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos) const
 {
 	Vector3 l_vec = findDisplacementVec(pos, {-1, 0, 0});
 	Vector3 tl_vec = findDisplacementVec(pos, {-1, -1, 0});
@@ -81,12 +74,10 @@ Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos, bool debug) con
 		}
 	}
 
-	//std::cout << vecs[min_index] << std::endl;
-
 	return vecs[min_index];
 }
 
-bool BoxCollider::checkCollision(const Vector3& pos, bool debug) const
+bool BoxCollider::checkCollision(const Vector3& pos) const
 {
 	auto colls = gameObject->GetScene()->GetColliders();
 	int size = colls.size();
@@ -100,12 +91,6 @@ bool BoxCollider::checkCollision(const Vector3& pos, bool debug) const
 		BColliderOff off = m_offset;
 		Vector3 other_pos = ((Transform*)(other_obj->GetTransform()))->GetPosition();
 		BColliderOff other_off = other_col->GetOffset();
-
-		if(debug) 
-		{
-			std::cout << pos << off.w << ' ' << off.h << std::endl
-				<< other_pos << other_off.w << ' ' << other_off.h << std::endl;
-		}
 
 		if(CompareBox(pos, off, other_pos, other_off))
 		{
@@ -155,9 +140,7 @@ void BoxCollider::OnStart()
 
 void BoxCollider::OnFixedIterate()
 {
-	//if (!gameObject->GetComponent("Rigidbody")) return;
-	//checkCollisionOfCurr();
-	//m_objectsCollided.clear();
+
 }
 
 void BoxCollider::OnIterate()
@@ -218,12 +201,46 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3f other_vel = other_rb->GetVelocity();
 
 	//https://en.wikipedia.org/wiki/Elastic_collision
-	Vector3f vel_after = (mass - other_mass * 1.0f)/(mass + other_mass * 1.0f) * vel + (2.0f * other_mass)/(mass + other_mass * 1.0f) * other_vel;
-	vel_after.x = -1.0f * vel_after.x;
+	
+	Vector3 center = Vector3(pos.x + std::round(off.w/2.0f), pos.y + std::round(off.h/2.0f), pos.z);
+	Vector3 other_center = Vector3(other_pos.x + std::round(other_off.w/2.0f), other_pos.y + std::round(other_off.h/2.0f), other_pos.z);
+	//std::cout << "pos: " << pos << "\ncenter: " << center << std::endl;
+
+	float operand1 = (2.0f * other_mass) / (mass + other_mass);
+	float operand2 = Vector3f_Dot(vel - other_vel, center - other_center) / (center - other_center).sqrMagnitude();
+	float operand = operand1 * operand2;
+
+	Vector3f cen_diff = center - other_center;
+	Vector3f cen_operand = operand * cen_diff;
+
+	Vector3f vel_after = vel - cen_operand;
+
+	//Vector3f vel_after = (mass - other_mass * 1.0f)/(mass + other_mass * 1.0f) * vel + (2.0f * other_mass)/(mass + other_mass * 1.0f) * other_vel;
 	//Vector3f other_vel_after = (2 * mass)/(mass + other_mass) * vel + (other_mass - mass)/(mass + other_mass) * other_vel;
 	
-	//std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
-	//std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
+	if(vel.magnitude() > 1000)
+	{
+		std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
+		std::cout << "mass: " << mass << " " << other_mass << std::endl;
+		std::cout << "vel: " << vel << " " << other_vel << std::endl;
+
+		std::cout << "operand1: " << operand1 << std::endl;
+		std::cout << "vel diff: " << vel - other_vel << std::endl;
+		std::cout << "center diff: " << center - other_center << std::endl;
+		std::cout << "dot: " << Vector3f_Dot(vel - other_vel, center - other_center) << std::endl;
+
+		std::cout << "center: " << center << std::endl;
+		std::cout << "other_center: " << other_center << std::endl;
+		std::cout << "center diff sqrmag: " << (center - other_center).sqrMagnitude() << std::endl;
+
+		std::cout << "operand2: " << operand2 << std::endl;
+
+		std::cout << "operand: " << operand << std::endl;
+		std::cout << "cen_operand: " << cen_operand << std::endl;
+
+		std::cout << gameObject->GetName() << vel << ' ' << vel_after << std::endl;
+	}
+
 	rb->SetVelocity(vel_after);
 
 }

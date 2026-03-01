@@ -21,6 +21,7 @@ typedef struct Vector3
 	int y;
 	int z;
 	int sqrMagnitude() const;
+	int magnitude() const;
 	Vector3 operator+(const Vector3& other);
 	Vector3 operator-(const Vector3& other);
 	void operator+=(const Vector3f& other);
@@ -56,6 +57,7 @@ Vector3f operator*(int lhs, const Vector3f& rhs);
 Vector3f operator*(float lhs, const Vector3f& rhs);
 
 Vector3 Vector3_One();
+int Vector3_Dot(const Vector3& lhs, const Vector3& rhs);
 Vector3f Vector3f_Zero();
 Vector3f Vector3f_Left();
 Vector3f Vector3f_Right();

@@ -29,9 +29,9 @@ class BoxCollider : public Component
 		BColliderOff m_offset;
 		std::unordered_set<GameObject*> m_objectsCollided;
 
-		Vector3 findDisplacementVec(const Vector3& pos, const Vector3& dir, bool debug = false) const;
-		Vector3 findDirectionToPushAway(const Vector3& pos, bool debug = false) const;
-		bool checkCollision(const Vector3& pos, bool debug = false) const;
+		Vector3 findDisplacementVec(const Vector3& pos, const Vector3& dir) const;
+		Vector3 findDirectionToPushAway(const Vector3& pos) const;
+		bool checkCollision(const Vector3& pos) const;
 		void checkCollisionOfCurr();
 	public:
 		BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger = false);

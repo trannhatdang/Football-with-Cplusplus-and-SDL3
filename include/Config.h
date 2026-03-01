@@ -11,5 +11,8 @@ std::string GetPlayerSpriteSheet();
 std::string GetPlayerTwoSpriteSheet();
 std::string GetGrassSpriteSheet();
 std::string GetBallSprite();
+std::string GetArrowSprite();
+std::string GetUnselectedArrowSprite();
+std::string GetSelectedArrowSprite();
 
 #endif

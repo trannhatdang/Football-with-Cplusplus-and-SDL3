@@ -10,6 +10,11 @@ int Vector3::sqrMagnitude() const
 	return this->x * this->x + this->y * this->y + this->z * this->z;
 }
 
+int Vector3::magnitude() const
+{
+	return std::sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
+}
+
 Vector3 Vector3::operator+(const Vector3& other)
 {
 	Vector3 ans = *this;
@@ -199,6 +204,11 @@ Vector3f operator*(float lhs, const Vector3f& rhs)
 Vector3 Vector3_One()
 {
 	return {1, 1, 1};
+}
+
+int Vector3_Dot(const Vector3& lhs, const Vector3& rhs)
+{
+	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
 Vector3f Vector3f_Zero()
