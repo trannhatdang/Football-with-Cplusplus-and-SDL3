@@ -1,7 +1,7 @@
 #include "CustomScene/GameScene/Goal.h"
 #include "engine/GameObject.h"
 
-Goal::Goal(GameObject* obj, GameManager* manager) : Component("Goal", obj), m_manager(manager) {};
+Goal::Goal(GameObject* obj, GameManager* manager, int team) : Component("Goal", obj), m_manager(manager), m_team(team) {};
 
 void Goal::OnIterate() {};
 
@@ -14,6 +14,6 @@ void Goal::OnTriggerEnter(GameObject* obj)
 {
 	if(obj->GetTag() == "Ball")
 	{
-		m_manager->Goal();
+		m_manager->Goal(m_team);
 	}
 };

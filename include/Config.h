@@ -14,5 +14,6 @@ std::string GetBallSprite();
 std::string GetArrowSprite();
 std::string GetUnselectedArrowSprite();
 std::string GetSelectedArrowSprite();
+std::string GetFont();
 
 #endif

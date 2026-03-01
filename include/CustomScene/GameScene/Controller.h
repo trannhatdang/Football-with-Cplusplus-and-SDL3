@@ -8,6 +8,7 @@ class Controller : public Component
 {
 	private:
 		std::vector<Movement*> m_players;
+		Movement* m_ogPlayer;
 		Movement* m_currPlayer;
 		Movement* m_nextPlayer;
 		SDL_Keycode m_key;
@@ -18,8 +19,9 @@ class Controller : public Component
 		Controller(GameObject* obj, const std::vector<Movement*>& players, SDL_Keycode key);
 		void OnIterate();
 		void OnEvent(SDL_Event* event);
-		void AddPlayer(Movement* move);
 		std::unique_ptr<Component> copy();
+		void AddPlayer(Movement* move);
+		void Reset();
 };
 
 #endif

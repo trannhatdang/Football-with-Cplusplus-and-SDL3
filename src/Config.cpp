@@ -16,6 +16,7 @@ const std::string GRASS_FILEPATH = ".\\data\\sprites\\grass-big.png";
 const std::string BALL_FILEPATH = ".\\data\\sprites\\ball.png";
 const std::string ARROW_SELECTED_FILEPATH = ".\\data\\sprites\\arrow-selected.png";
 const std::string ARROW_UNSELECTED_FILEPATH = ".\\data\\sprites\\arrow-unselected.png";
+const std::string FONT_FILEPATH = ".\\data\\VCR_OSD_MONO.ttf";
 
 int GetWindowWidth(){
 	return WINDOW_WIDTH;
@@ -96,4 +97,9 @@ std::string GetSelectedArrowSprite()
 std::string GetUnselectedArrowSprite()
 {
 	return ARROW_UNSELECTED_FILEPATH;
+}
+
+std::string GetFont()
+{
+	return FONT_FILEPATH;
 }

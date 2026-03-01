@@ -70,6 +70,11 @@ void Rigidbody::OnIterate()
 }
 
 
+std::unique_ptr<Component> Rigidbody::copy()
+{
+	return std::make_unique<Rigidbody>(gameObject);
+}
+
 int Rigidbody::GetMass() const
 {
 	return m_mass;
@@ -85,11 +90,6 @@ void Rigidbody::SetVelocity(const Vector3f& vec)
 	m_velocity = Vector3f_Clamp(vec, m_min_vel, m_max_vel);
 }	
 
-std::unique_ptr<Component> Rigidbody::copy()
-{
-	return std::make_unique<Rigidbody>(gameObject);
-}
-
 void Rigidbody::MovePosition(const Vector3& pos)
 {
 	gameObject->GetTransform()->SetPosition(pos);
@@ -98,4 +98,11 @@ void Rigidbody::MovePosition(const Vector3& pos)
 void Rigidbody::AddForce(const Vector3f& force)
 {
 	m_force_applied += force;
+}
+
+void Rigidbody::Reset()
+{
+	m_velocity = Vector3f_Zero();
+	m_acceleration = Vector3f_Zero();
+	m_force_applied = Vector3f_Zero();
 }

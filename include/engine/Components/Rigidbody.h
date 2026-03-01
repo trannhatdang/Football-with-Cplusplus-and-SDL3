@@ -25,12 +25,13 @@ class Rigidbody : public Component
 		~Rigidbody();
 		void OnFixedIterate();
 		void OnIterate();
+		std::unique_ptr<Component> copy();
 		int GetMass() const;
 		Vector3f GetVelocity() const;
 		void SetVelocity(const Vector3f& vec);
-		std::unique_ptr<Component> copy();
 		void MovePosition(const Vector3& pos);
 		void AddForce(const Vector3f& force);
+		void Reset();
 };
 
 #endif

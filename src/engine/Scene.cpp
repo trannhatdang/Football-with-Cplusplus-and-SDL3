@@ -81,6 +81,23 @@ GameObject* Scene::GetGameObject(const std::string& name)
 	return NULL;
 }
 
+std::vector<GameObject*> Scene::GetGameObjectsWithTag(const std::string& tag)
+{
+	std::vector<GameObject*> ans;
+	int size = m_gameObjects.size();
+	ans.reserve(size);
+
+	for(int i = 0; i < size; ++i)
+	{
+		if(m_gameObjects[i]->GetTag() == tag)
+		{
+			ans.push_back(m_gameObjects[i].get());
+		}
+	}
+
+	return ans;
+}
+
 SDL_Renderer* Scene::GetRenderer() const 
 {
 	return m_renderer;

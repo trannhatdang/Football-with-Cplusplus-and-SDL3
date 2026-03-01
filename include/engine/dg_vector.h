@@ -56,6 +56,7 @@ bool operator==(const Vector3f& lhs, const Vector3f& rhs);
 Vector3f operator*(int lhs, const Vector3f& rhs);
 Vector3f operator*(float lhs, const Vector3f& rhs);
 
+Vector3 Vector3_Zero();
 Vector3 Vector3_One();
 int Vector3_Dot(const Vector3& lhs, const Vector3& rhs);
 Vector3f Vector3f_Zero();

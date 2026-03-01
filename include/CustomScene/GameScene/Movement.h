@@ -28,13 +28,14 @@ class Movement: public Component
 		void OnFixedIterate();
 		void OnEvent(SDL_Event* event);
 		void OnDraw(SDL_Renderer* renderer);
+		std::unique_ptr<Component> copy();
+		Vector3 GetOGPos() const;
 		bool GetControl() const;
-		void SetControl();
 		bool GetCursor() const;
+		void SetControl();
 		void SetCursor();
 		void PlayerOneControls(SDL_Event* event);
 		void PlayerTwoControls(SDL_Event* event);
-		std::unique_ptr<Component> copy();
 };
 
 #endif

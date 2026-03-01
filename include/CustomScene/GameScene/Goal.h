@@ -8,8 +8,9 @@ class Goal : public Component
 {
 	private:
 		GameManager* m_manager;
+		int m_team = 0;
 	public:
-		Goal(GameObject* obj, GameManager* manager);
+		Goal(GameObject* obj, GameManager* manager, int team = 0);
 		void OnIterate();
 		std::unique_ptr<Component> copy();
 		void OnTriggerEnter(GameObject* obj);

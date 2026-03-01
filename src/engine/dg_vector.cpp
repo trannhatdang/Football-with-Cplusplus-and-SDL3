@@ -201,6 +201,11 @@ Vector3f operator*(float lhs, const Vector3f& rhs)
 	return rhs * lhs;
 }
 
+Vector3 Vector3_Zero()
+{
+	return {0, 0, 0};
+}
+
 Vector3 Vector3_One()
 {
 	return {1, 1, 1};
@@ -270,9 +275,14 @@ Vector3f Vector3f_Clamp(const Vector3f& vec, const Vector3f& min, const Vector3f
 
 Vector3f Vector3f_GetPrimaryDirection(const Vector3f& vec)
 {
-	if(std::abs(vec.x) >= std::abs(vec.y))
+	if(vec == Vector3_Zero())
 	{
-		if(vec.x >= 0)
+		return Vector3_Zero();
+	}
+
+	if(std::abs(vec.x) > std::abs(vec.y))
+	{
+		if(vec.x > 0)
 		{
 			return Vector3f_Right();
 		}
@@ -283,7 +293,7 @@ Vector3f Vector3f_GetPrimaryDirection(const Vector3f& vec)
 	}
 	else
 	{
-		if(vec.y >= 0)
+		if(vec.y > 0)
 		{
 			return Vector3f_Down();
 		}

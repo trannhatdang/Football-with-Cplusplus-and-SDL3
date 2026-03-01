@@ -84,7 +84,7 @@ bool BoxCollider::checkCollision(const Vector3& pos) const
 	for(int i = 0; i < size; ++i)
 	{
 		auto other_col = colls[i];
-		if(other_col == this) continue;
+		if(other_col == this || other_col->m_trigger) continue;
 
 		GameObject* other_obj = other_col->gameObject;
 

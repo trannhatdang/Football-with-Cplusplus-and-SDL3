@@ -25,6 +25,7 @@ class Scene
 		GameObject* AddGameObject(const std::string& name = "GameObject", const std::string& tag = "Tag");
 		GameObject* GetGameObject(int index = 0);
 		GameObject* GetGameObject(const std::string& name = "GameObject");
+		std::vector<GameObject*> GetGameObjectsWithTag(const std::string& tag = "GameObject");
 		SDL_Renderer* GetRenderer() const;
 		SDL_Window* GetWindow() const;
 		const std::vector<BoxCollider*>& GetColliders() const;

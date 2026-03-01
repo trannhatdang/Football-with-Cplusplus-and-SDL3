@@ -6,6 +6,7 @@ Controller::Controller(GameObject* obj, const std::vector<Movement*>& players, S
 	if(m_players.size() != 0)
 	{
 		m_currPlayer = m_players[0];
+		m_ogPlayer = m_currPlayer;
 	}
 	else
 	{
@@ -94,4 +95,11 @@ void Controller::AddPlayer(Movement* move)
 std::unique_ptr<Component> Controller::copy()
 {
 	return std::make_unique<Controller>(gameObject, m_players, m_key);
+}
+
+void Controller::Reset()
+{
+	m_currPlayer->SetControl();
+	m_currPlayer = m_ogPlayer;
+	m_currPlayer->SetControl();
 }

@@ -50,6 +50,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char** argv)
 		return SDL_APP_FAILURE;
 	}
 
+	if(!TTF_Init())
+	{
+		SDL_Log("TTF failed to initialize");
+		return SDL_APP_FAILURE;
+	}
+
 	SDL_SetRenderLogicalPresentation(renderer, GetWindowWidth(), GetWindowHeight(), SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
 	scenes[0] = std::make_unique<Scene>("IntroScene", &ChangeScene, renderer, window);
@@ -60,6 +66,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char** argv)
 	GenerateGameScene(scenes[2]);
 
 	ChangeScene(2); //Straight into game scene
+
+	currScene->OnStart();
 
 	return SDL_APP_CONTINUE;
 }
@@ -98,5 +106,5 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
-
+	TTF_Quit();
 }

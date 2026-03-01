@@ -11,8 +11,10 @@ void Animator::OnStart()
 	{
 		m_currNode = m_startNode;
 	}
-
-	std::cout << m_currNode << std::endl;
+	else
+	{
+		m_currNode = m_anyNode->adj[0];
+	}
 }
 
 void Animator::OnIterate()
