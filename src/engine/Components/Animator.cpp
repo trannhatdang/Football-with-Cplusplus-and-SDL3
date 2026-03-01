@@ -11,6 +11,8 @@ void Animator::OnStart()
 	{
 		m_currNode = m_startNode;
 	}
+
+	std::cout << m_currNode << std::endl;
 }
 
 void Animator::OnIterate()
@@ -36,10 +38,16 @@ void Animator::OnIterate()
 	}
 }
 
-AnimationNode* Animator::AddAnimation(AnimationNode* prevNode, const std::string& filepath, int width, int height, int num_frame, int scale, cond_func* cond)
+void Animator::OnDraw(SDL_Renderer* renderer)
+{
+	auto pos = gameObject->GetTransform()->GetPosition();
+	if(m_currNode) m_currNode->anim->OnDraw(renderer, { pos.x, pos.y, (int)m_currNode->anim->m_dstrect.w, (int)m_currNode->anim->m_dstrect.h });
+}
+
+AnimationNode* Animator::AddAnimation(AnimationNode* prevNode, const std::string& filepath, SDL_FRect srcrect, SDL_FRect dstrect, int num_frame, int scale, cond_func* cond)
 {
 	AnimationNode* node = new AnimationNode;
-	node->anim = std::make_unique<Animation>(m_renderer, filepath, width, height, num_frame, scale);
+	node->anim = std::make_unique<Animation>(m_renderer, filepath, srcrect, dstrect, num_frame, scale);
 
 	if(prevNode)
 	{
@@ -59,7 +67,7 @@ AnimationNode* Animator::AddAnimation(AnimationNode* prevNode, const std::string
 
 AnimationNode* Animator::AddAnimation(AnimationNode* node)
 {
-	this->AddAnimation(nullptr, node->anim->m_filepath, node->anim->m_width, node->anim->m_height, node->anim->m_num_frames, node->anim->m_scale, nullptr);
+	this->AddAnimation(nullptr, node->anim->m_filepath, node->anim->m_srcrect, node->anim->m_dstrect, node->anim->m_num_frames, node->anim->m_scale, nullptr);
 	return nullptr;
 }
 
@@ -73,6 +81,11 @@ AnimationNode* Animator::GetAnyNode()
 {
 	return m_anyNode.get();
 }
+
+void Animator::SetStartNode(AnimationNode* node)
+{
+	m_startNode = node;
+};
 
 //I WILL NEVER COPY
 

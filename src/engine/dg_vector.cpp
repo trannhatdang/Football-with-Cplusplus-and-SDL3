@@ -206,6 +206,26 @@ Vector3f Vector3f_Zero()
 	return {0, 0, 0};
 }
 
+Vector3f Vector3f_Left()
+{
+	return {-1, 0, 0};
+}
+
+Vector3f Vector3f_Right()
+{
+	return {1, 0, 0};
+}
+
+Vector3f Vector3f_Up()
+{
+	return {0, -1, 0};
+}
+
+Vector3f Vector3f_Down()
+{
+	return {0, 1, 0};
+}
+
 Vector3f Vector3f_GetUnitVector(const Vector3f& vec)
 {
 	float mag = vec.magnitude();
@@ -236,6 +256,32 @@ Vector3f Vector3f_Clamp(const Vector3f& vec, const Vector3f& min, const Vector3f
 		std::max(std::min(vec.y, max.y), min.y),
 		std::max(std::min(vec.z, max.z), min.z)
 	};
+}
+
+Vector3f Vector3f_GetPrimaryDirection(const Vector3f& vec)
+{
+	if(std::abs(vec.x) >= std::abs(vec.y))
+	{
+		if(vec.x >= 0)
+		{
+			return Vector3f_Right();
+		}
+		else
+		{
+			return Vector3f_Left();
+		}
+	}
+	else
+	{
+		if(vec.y >= 0)
+		{
+			return Vector3f_Down();
+		}
+		else
+		{
+			return Vector3f_Up();
+		}
+	}
 }
 
 float Vector3f_Dot(const Vector3f& lhs, const Vector3f& rhs)

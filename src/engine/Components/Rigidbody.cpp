@@ -29,6 +29,10 @@ void Rigidbody::OnFixedIterate()
 
 	m_acceleration = m_force_applied / m_mass;
 	m_velocity = Vector3f_Clamp(m_velocity + m_acceleration, m_min_vel, m_max_vel);
+	if(m_velocity.magnitude() >= 100)
+	{
+		m_velocity = Vector3f_Zero();
+	}
 
 	if(std::round(m_velocity.magnitude()) == 0) return;
 

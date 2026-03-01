@@ -5,6 +5,8 @@
 
 int GetWindowWidth();
 int GetWindowHeight();
+std::string GetPlayerTopdownSprite(int index);
+std::string GetPlayerTwoTopdownSprite(int index);
 std::string GetPlayerSpriteSheet();
 std::string GetPlayerTwoSpriteSheet();
 std::string GetGrassSpriteSheet();

@@ -57,10 +57,15 @@ Vector3f operator*(float lhs, const Vector3f& rhs);
 
 Vector3 Vector3_One();
 Vector3f Vector3f_Zero();
+Vector3f Vector3f_Left();
+Vector3f Vector3f_Right();
+Vector3f Vector3f_Up();
+Vector3f Vector3f_Down();
 Vector3f Vector3f_GetUnitVector(const Vector3f& vec);
 Vector3f Vector3f_Sqrt(const Vector3f& vec);
 Vector3f Vector3f_GetAbs(const Vector3f& vec);
 Vector3f Vector3f_Clamp(const Vector3f& vec, const Vector3f& min, const Vector3f& max);
+Vector3f Vector3f_GetPrimaryDirection(const Vector3f& vec);
 float Vector3f_Dot(const Vector3f& lhs, const Vector3f& rhs);
 Vector3f GetMinusVector3f(const Vector3f& vec);
 Vector3f GetVector3fSign(const Vector3f& vec);

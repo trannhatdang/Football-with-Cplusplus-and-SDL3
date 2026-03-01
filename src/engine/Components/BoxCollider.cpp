@@ -209,7 +209,6 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 
 	auto dir_info = findDirectionToPushAway(pos);
 	rb->MovePosition(pos + dir_info);
-	if(gameObject->GetName() == "Ball") std::cout << dir_info << std::endl;
 
 	if(other_rb == NULL) return;
 

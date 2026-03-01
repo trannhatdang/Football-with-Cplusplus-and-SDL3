@@ -30,8 +30,8 @@ class GameObject
 		std::string GetName() const;
 		std::string GetTag() const;
 		Scene* GetScene() const;
-		bool AddComponent(Component* component);
-		bool CopyComponent(const std::unique_ptr<Component>& component);
+		Component* AddComponent(Component* component);
+		Component* CopyComponent(const std::unique_ptr<Component>& component);
 };
 
 #endif

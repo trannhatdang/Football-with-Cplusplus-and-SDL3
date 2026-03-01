@@ -114,26 +114,26 @@ Scene* GameObject::GetScene() const
 	return m_scene;
 }
 
-bool GameObject::AddComponent(Component* component)
+Component* GameObject::AddComponent(Component* component)
 {
 	if(m_comp_map.count(component->GetName()) == 0)
 	{
 		m_components.push_back(std::unique_ptr<Component>(component));
 		m_comp_map.insert({component->GetName(), component});
-		return true;
+		return m_components[m_components.size() - 1].get();
 	}
-	return false;
+	return nullptr;
 }
 
-bool GameObject::CopyComponent(const std::unique_ptr<Component>& component)
+Component* GameObject::CopyComponent(const std::unique_ptr<Component>& component)
 {
 	if (m_comp_map.count(component->GetName()) == 0)
 	{
 		m_components.push_back(component->copy());
 		m_comp_map.insert({component->GetName(), m_components.back().get()});
-		return true;
+		m_components[m_components.size() - 1].get();
 	}
-	return false;
+	return nullptr;
 
 }
 
