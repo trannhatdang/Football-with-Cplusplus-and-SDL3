@@ -14,8 +14,11 @@ void Wind::OnIterate()
 
 void Wind::OnFixedIterate()
 {
-	auto rb = (Rigidbody*)gameObject->GetComponent("Rigidbody");
-	rb->AddVelocity(0.01f * m_speed);
+	if(rand() % 10 == 0){
+		auto rb = (Rigidbody*)gameObject->GetComponent("Rigidbody");
+		rb->AddVelocity(0.1f*m_speed);
+
+	}
 }
 
 std::unique_ptr<Component> Wind::copy()

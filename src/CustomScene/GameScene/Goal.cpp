@@ -7,7 +7,7 @@ void Goal::OnIterate() {};
 
 std::unique_ptr<Component> Goal::copy()
 {
-	return std::make_unique<Goal>(gameObject, m_manager);
+	return std::make_unique<Goal>(gameObject, m_manager, m_team);
 };
 
 void Goal::OnTriggerEnter(GameObject* obj)

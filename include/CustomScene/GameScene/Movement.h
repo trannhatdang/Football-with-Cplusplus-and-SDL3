@@ -18,6 +18,7 @@ class Movement: public Component
 
 		float m_hort = 0.0f;
 		float m_vert = 0.0f;
+		bool m_playerControl = true;
 		bool m_haveControl = false;
 		bool m_cursor = false;
 		bool m_playerOne = true;
@@ -32,10 +33,15 @@ class Movement: public Component
 		Vector3 GetOGPos() const;
 		bool GetControl() const;
 		bool GetCursor() const;
+		bool GetHasBall(GameObject* ball) const;
 		void SetControl();
 		void SetCursor();
 		void PlayerOneControls(SDL_Event* event);
 		void PlayerTwoControls(SDL_Event* event);
+
+		void SetBotControl();
+		void SetDir(float hort = 0.0f, float vert = 0.0f);
+
 };
 
 #endif

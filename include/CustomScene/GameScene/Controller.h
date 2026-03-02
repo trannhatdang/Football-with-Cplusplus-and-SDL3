@@ -7,14 +7,13 @@
 class Controller : public Component
 {
 	private:
+		bool m_playerControl = false;
+
 		std::vector<Movement*> m_players;
 		Movement* m_ogPlayer;
 		Movement* m_currPlayer;
 		Movement* m_nextPlayer;
 		SDL_Keycode m_key;
-
-		void switchPlayer();
-		Movement* findNextPlayer(Movement* player);
 	public:
 		Controller(GameObject* obj, const std::vector<Movement*>& players, SDL_Keycode key);
 		void OnIterate();
@@ -22,6 +21,13 @@ class Controller : public Component
 		std::unique_ptr<Component> copy();
 		void AddPlayer(Movement* move);
 		void Reset();
+
+		void SwitchPlayer();
+		Movement* FindNextPlayer(Movement* player);
+		Movement* GetCurrPlayer() const;
+
+		void SetBotControl();
+		bool IsCurrClosestToPos(const Vector3& pos);
 };
 
 #endif

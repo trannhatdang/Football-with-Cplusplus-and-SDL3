@@ -15,7 +15,7 @@ Controller::Controller(GameObject* obj, const std::vector<Movement*>& players, S
 
 	if(m_players.size() >= 1)
 	{
-		m_nextPlayer = findNextPlayer(m_currPlayer);
+		m_nextPlayer = FindNextPlayer(m_currPlayer);
 		m_nextPlayer->SetCursor();
 	}
 	else
@@ -24,7 +24,7 @@ Controller::Controller(GameObject* obj, const std::vector<Movement*>& players, S
 	}
 }
 
-Movement* Controller::findNextPlayer(Movement* player)
+Movement* Controller::FindNextPlayer(Movement* player)
 {
 	Vector3 pos = player->GetGameObject()->GetTransform()->GetPosition();
 	Movement* nextPlayer = nullptr;
@@ -45,7 +45,7 @@ Movement* Controller::findNextPlayer(Movement* player)
 	return nextPlayer;
 }
 
-void Controller::switchPlayer()
+void Controller::SwitchPlayer()
 {
 	m_nextPlayer->SetCursor();
 
@@ -53,7 +53,7 @@ void Controller::switchPlayer()
 	m_currPlayer = m_nextPlayer;
 	m_currPlayer->SetControl();
 
-	m_nextPlayer = findNextPlayer(m_currPlayer);
+	m_nextPlayer = FindNextPlayer(m_currPlayer);
 
 	m_nextPlayer->SetCursor();
 }
@@ -65,7 +65,7 @@ void Controller::OnIterate()
 		m_currPlayer->SetControl();
 	}
 
-	auto next = findNextPlayer(m_currPlayer);
+	auto next = FindNextPlayer(m_currPlayer);
 
 	if(next != m_nextPlayer)
 	{
@@ -82,7 +82,7 @@ void Controller::OnEvent(SDL_Event* event)
 		auto keyEvent = event->key;
 		if(event->key.key == m_key)
 		{
-			this->switchPlayer();
+			this->SwitchPlayer();
 		}
 	}
 }
@@ -102,4 +102,34 @@ void Controller::Reset()
 	m_currPlayer->SetControl();
 	m_currPlayer = m_ogPlayer;
 	m_currPlayer->SetControl();
+}
+
+Movement* Controller::GetCurrPlayer() const
+{
+	return m_currPlayer;
+}
+
+void Controller::SetBotControl()
+{
+	for(auto it : m_players)
+	{
+		it->SetBotControl();
+	}
+}
+
+bool Controller::IsCurrClosestToPos(const Vector3& pos)
+{
+	auto dist = (m_currPlayer->GetGameObject()->GetTransform()->GetPosition() - pos).magnitude();
+	for (auto it : m_players)
+	{
+		if (it == m_currPlayer) continue;
+
+		auto new_pos = it->GetGameObject()->GetTransform()->GetPosition();
+		auto new_dist = (new_pos - pos).magnitude();
+		if (dist > new_dist)
+		{
+			return false;
+		}
+	}
+	return true;
 }

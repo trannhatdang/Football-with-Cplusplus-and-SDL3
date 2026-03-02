@@ -41,6 +41,8 @@ void GameManager::OnStart()
 	m_controllers = m_scene->GetGameObjectsWithTag("Controller");
 	m_ball = m_scene->GetGameObject("Ball");
 	m_score = m_scene->GetGameObject("Score");
+	m_goal_0 = m_scene->GetGameObject("Goal1");
+	m_goal_1 = m_scene->GetGameObject("Goal2");
 	m_wind_speed = m_scene->GetGameObject("WindSpeed");
 }
 
@@ -48,6 +50,7 @@ void GameManager::OnIterate()
 {
 	if(m_gameState == Goaled)
 	{
+		static_cast<Font*>(m_score->GetComponent("Font"))->SetText(std::to_string(m_team1_score) + " : " + std::to_string(m_team2_score));
 		if(!m_recording)
 		{
 			m_lastTime = std::chrono::system_clock::now();
@@ -81,9 +84,9 @@ void GameManager::changeWindSpeed()
 {
 	auto wind = (Wind*)m_ball->GetComponent("Wind");
 	
-	float new_x = (float)(rand() % 7 - 3);
-	float new_y = (float)(rand() % 7 - 3);
-	float new_z = (float)(rand() % 7 - 3);
+	float new_x = (float)(rand() % 4 - 2);
+	float new_y = (float)(rand() % 4 - 2);
+	float new_z = (float)(rand() % 4 - 2);
 	wind->SetWindSpeed({ new_x, new_y, new_z });
 	if(m_wind_speed)
 	{
@@ -146,4 +149,22 @@ void GameManager::Goal(int team)
 	{
 		m_team2_score++;
 	}
+}
+
+GameObject* GameManager::GetBall() const
+{
+	return m_ball;
+}
+
+Vector3 GameManager::GetGoalPos(int team) const
+{
+	if(team)
+	{
+		return m_goal_0->GetTransform()->GetPosition() + Vector3(40, 80, 0);
+	}
+	else
+	{
+		return m_goal_1->GetTransform()->GetPosition() + Vector3(40, 80, 0);
+	}
+
 }

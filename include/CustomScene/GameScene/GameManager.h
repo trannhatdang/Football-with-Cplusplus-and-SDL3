@@ -24,6 +24,8 @@ class GameManager : public Component
 		GameObject* m_ball = nullptr;
 		GameObject* m_score = nullptr;
 		GameObject* m_wind_speed = nullptr;
+		GameObject* m_goal_0 = nullptr;
+		GameObject* m_goal_1 = nullptr;
 		Scene* m_scene;
 
 		GameState m_gameState = Playing;
@@ -47,6 +49,8 @@ class GameManager : public Component
 		int GetTeamTwoScore() const;
 		bool GetPaused() const;
 		void Goal(int team = 0);
+		GameObject* GetBall() const;
+		Vector3 GetGoalPos(int team = 0) const;
 };
 
 #endif

@@ -246,19 +246,19 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	controller1->AddComponent(new Controller(controller1, {striker1_movement, midfielder10_movement, midfielder11_movement, defender1_movement, goalkeeper1_movement}, SDLK_SPACE));
 
 	auto controller2 = gameScene->AddGameObject("Controller2", "Controller");
-	controller2->AddComponent(new Controller(controller2, {striker2_movement, midfielder20_movement, midfielder21_movement, defender2_movement, goalkeeper2_movement}, SDLK_RSHIFT));
+	auto controller2_comp = static_cast<Controller*>(controller2->AddComponent(new Controller(controller2, {striker2_movement, midfielder20_movement, midfielder21_movement, defender2_movement, goalkeeper2_movement}, SDLK_RSHIFT)));
 	
 	auto gameManagerObj = gameScene->AddGameObject("GameManager", "GameManager");
 	GameManager* gameManagerComp = static_cast<GameManager*>(gameManagerObj->AddComponent(new GameManager(gameManagerObj, gameScene.get())));
 
 	auto goal1 = gameScene->AddGameObject("Goal1", "Goal");
-	goal1->AddComponent(new Goal(goal1, gameManagerComp, 0));
+	goal1->AddComponent(new Goal(goal1, gameManagerComp, 1));
 	goal1->AddComponent(new BoxCollider(goal1, {80, 140}, true));
 	goal1->GetTransform()->SetPosition({ 0, 160 * 2 + 10 });
 
 	auto goal2 = gameScene->AddGameObject("Goal2", "Goal");
-	goal2->AddComponent(new Goal(goal2, gameManagerComp, 1));
-	goal2->AddComponent(new BoxCollider(goal2, {80, 150}, true));
+	goal2->AddComponent(new Goal(goal2, gameManagerComp, 0));
+	goal2->AddComponent(new BoxCollider(goal2, {80, 140}, true));
 	goal2->GetTransform()->SetPosition({ 160 * 6 + 80, 160 * 2 + 10 });
 
 	auto goalpost10 = gameScene->AddGameObject("Goalpost10", "Goalpost");
@@ -282,7 +282,7 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	auto goalpost21 = gameScene->AddGameObject("Goalpost21", "Goalpost");
 	auto goalpost21_col = static_cast<BoxCollider*>(goalpost21->AddComponent(new BoxCollider(goalpost21, {80, 10})));
 	goalpost21->AddComponent(new Rigidbody(goalpost21, true, 1, 60000));
-	goalpost21->GetTransform()->SetPosition({ 160 * 6 + 80, 160 * 2 });
+	goalpost21->GetTransform()->SetPosition({ 160 * 6 + 80, 160 * 2 + 150 });
 	goalpost21_col->SetCenter({ 0, 10000, 0});
 
 	//ui
@@ -295,4 +295,8 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 	static_cast<Transform*>(wind_speed_text->GetTransform())->SetPosition({100, 20, -2});
 	auto wind_speed_font = static_cast<Font*>(wind_speed_text->AddComponent(new Font(wind_speed_text, renderer, GetFont())));
 	wind_speed_font->SetText("(0.0, 0.0)");
+
+	//AI
+	auto ai = gameScene->AddGameObject("AI", "AI");
+	auto ai_comp = static_cast<AI*>(ai->AddComponent(new AI(ai, gameManagerComp, controller2_comp)));
 }

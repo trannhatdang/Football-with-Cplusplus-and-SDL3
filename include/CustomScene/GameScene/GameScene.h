@@ -9,6 +9,7 @@
 #include "engine/Components/BoxCollider.h"
 #include "engine/Components/Font.h"
 #include "Goal.h"
+#include "AI.h"
 #include "Controller.h"
 #include "Movement.h"
 #include "Config.h"

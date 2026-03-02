@@ -28,6 +28,11 @@ void Movement::OnFixedIterate()
 			new_dir.y > 0 ? std::ceil(new_dir.y) : std::floor(new_dir.y),
 			new_dir.z > 0 ? std::ceil(new_dir.z) : std::floor(new_dir.z));
 
+	if(!m_playerControl)
+	{
+		std::cout << dir << std::endl;
+		std::cout << new_dir_int << std::endl;
+	}
 	//std::cout << DGTime_deltaTime() << std::endl;
 	//std::cout << new_dir << std::endl;
 	//rb->MovePosition(transform->GetPosition() + new_dir_int);
@@ -42,6 +47,7 @@ void Movement::OnIterate()
 void Movement::OnEvent(SDL_Event* event)
 {
 	if (!m_haveControl) return;
+	if (!m_playerControl) return;
 
 	if(m_playerOne)
 	{
@@ -91,14 +97,33 @@ bool Movement::GetControl() const
 	return m_haveControl;
 }
 
-void Movement::SetControl()
-{
-	m_haveControl = !m_haveControl;
-}
-
 bool Movement::GetCursor() const
 {
 	return m_cursor;
+}
+
+bool Movement::GetHasBall(GameObject* obj) const
+{
+	if(!obj) return false;
+
+	auto ball_pos = obj->GetTransform()->GetPosition();
+	auto pos = gameObject->GetTransform()->GetPosition();
+
+	auto dist = ball_pos - pos;
+
+	if(dist.magnitude() < 50)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Movement::SetControl()
+{
+	m_haveControl = !m_haveControl;
 }
 
 void Movement::SetCursor()
@@ -207,7 +232,21 @@ void Movement::PlayerTwoControls(SDL_Event* event)
 	}
 
 }
+
 std::unique_ptr<Component> Movement::copy()
 {
 	return std::make_unique<Movement>(gameObject, m_renderer, m_speed, m_haveControl, m_playerOne);
+}
+
+void Movement::SetBotControl()
+{
+	m_playerControl = !m_playerControl;
+}
+
+void Movement::SetDir(float vert, float hort)
+{
+	if(m_playerControl) return;
+
+	m_hort = hort;
+	m_vert = vert;
 }
