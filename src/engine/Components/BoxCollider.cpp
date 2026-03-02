@@ -319,8 +319,7 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 		old_pos = new_pos;
 		new_pos = new_dir_int + pos;
 
-		if((new_dir_int.x > 0 && new_pos.x >= lim.x) || (new_dir_int.x < 0 && new_pos.x <= lim.x)
-			|| (new_dir_int.y > 0 && new_pos.y >= lim.y) || (new_dir_int.y < 0 && new_pos.y <= lim.y))
+		if(new_dir_int.magnitude() > dir.magnitude())
 		{
 			new_pos = lim;
 			limit = true;
