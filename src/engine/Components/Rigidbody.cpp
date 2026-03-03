@@ -37,18 +37,8 @@ void Rigidbody::OnFixedIterate()
 
 	if(std::round(m_velocity.magnitude()) == 0) return;
 
-	BoxCollider* coll = (BoxCollider*)gameObject->GetComponent("BoxCollider");
 
-	if(coll)
-	{
-		pos = coll->CheckPath(pos, m_velocity);
-	}
-	else
-	{
-		pos += m_velocity;
-	}
-
-	this->MovePosition(pos);
+	this->MovePosition(pos, m_velocity);
 
 	m_acceleration = Vector3f_Zero();
 	m_force_applied = Vector3f_Zero();
@@ -56,11 +46,6 @@ void Rigidbody::OnFixedIterate()
 	if(m_hasDrag)
 	{
 		_drag();
-	}
-
-	if(coll) 
-	{
-		coll->CheckCollision();
 	}
 }
 
@@ -94,6 +79,28 @@ void Rigidbody::AddVelocity(const Vector3f& vec)
 {
 	m_velocity = Vector3f_Clamp(m_velocity + vec, m_min_vel, m_max_vel);
 }	
+
+void Rigidbody::MovePosition(const Vector3& pos, const Vector3& dir)
+{
+	BoxCollider* coll = (BoxCollider*)gameObject->GetComponent("BoxCollider");
+	Vector3 new_pos = pos;
+
+	if(coll)
+	{
+		new_pos = coll->CheckPath(new_pos, m_velocity);
+	}
+	else
+	{
+		new_pos += m_velocity;
+	}
+
+	if(coll) 
+	{
+		coll->CheckCollision();
+	}
+
+	gameObject->GetTransform()->SetPosition(pos);
+}
 
 void Rigidbody::MovePosition(const Vector3& pos)
 {

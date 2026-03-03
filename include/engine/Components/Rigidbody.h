@@ -30,6 +30,7 @@ class Rigidbody : public Component
 		Vector3f GetVelocity() const;
 		void SetVelocity(const Vector3f& vec);
 		void AddVelocity(const Vector3f& vec);
+		void MovePosition(const Vector3& pos, const Vector3& dir);
 		void MovePosition(const Vector3& pos);
 		void Reset();
 		void AddForce(const Vector3f& force);
