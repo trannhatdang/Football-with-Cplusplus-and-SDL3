@@ -3,11 +3,6 @@
 #include "engine/GameObject.h"
 #include "engine/Scene.h"
 
-static bool PointInBetweenPoints(int in, int l, int r)
-{
-	return in >= l && in <= r;
-}
-
 static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BColliderOff other_off, bool can_equal = false, bool debug = false)
 {
 	bool a = false, b = false, c = false, d = false;
@@ -124,7 +119,6 @@ void BoxCollider::checkCollisionOfCurr()
 
 BoxCollider::BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger) : Component("BoxCollider", gameObject), m_trigger(isTrigger), m_offset(offset) 
 {
-	auto pos = gameObject->GetTransform()->GetPosition();
 	gameObject->GetScene()->RegisterCollider(this);
 }
 
@@ -189,26 +183,20 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 
 	Rigidbody* other_rb = (Rigidbody*)other_obj->GetComponent("Rigidbody");
 	Vector3 pos = gameObject->GetTransform()->GetPosition();
-	BColliderOff off = m_offset;
-	Vector3 other_pos = other_obj->GetTransform()->GetPosition();
-	BColliderOff other_off = other_col->GetOffset();
 
 	auto dir_info = findDirectionToPushAway(pos);
 	rb->MovePosition(pos + dir_info);
 
 	if(other_rb == NULL) return;
 
+	//calculatinng vel after: https://en.wikipedia.org/wiki/Elastic_collision
 	int mass = rb->GetMass();
 	int other_mass = other_rb->GetMass();
 	Vector3f vel = rb->GetVelocity();
 	Vector3f other_vel = other_rb->GetVelocity();
 
-	//https://en.wikipedia.org/wiki/Elastic_collision
-	
-	
 	Vector3 center = GetCenter();
 	Vector3 other_center = other_col->GetCenter();
-	//std::cout << "pos: " << pos << "\ncenter: " << center << std::endl;
 
 	float operand1 = (2.0f * other_mass) / (mass + other_mass);
 	float operand2 = Vector3f_Dot(vel - other_vel, center - other_center) / (center - other_center).sqrMagnitude();
@@ -219,9 +207,6 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 
 	Vector3f vel_after = vel - cen_operand;
 
-	//Vector3f vel_after = (mass - other_mass * 1.0f)/(mass + other_mass * 1.0f) * vel + (2.0f * other_mass)/(mass + other_mass * 1.0f) * other_vel;
-	//Vector3f other_vel_after = (2 * mass)/(mass + other_mass) * vel + (other_mass - mass)/(mass + other_mass) * other_vel;
-	
 	if(vel.magnitude() > 1000)
 	{
 		std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;

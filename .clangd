@@ -1,5 +1,10 @@
 CompileFlags:
   Add:
+    - -Wno-vla-extension
     - -ID:\\DH\\HK252\\FIFA_CLONE (Visual Studio)\\include
     - -lSDL3
     - -lSDL3_image
+    - -Wall
+    - -O2
+    - -Wno-unused-const-variable
+    - -Wno-sign-conversion
