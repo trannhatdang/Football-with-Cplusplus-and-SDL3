@@ -25,6 +25,11 @@ static bool CompareBox(Vector3 pos, BColliderOff off, Vector3 other_pos, BCollid
 	return !(a || b || c || d);
 }
 
+BoxCollider::BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger) : Component("BoxCollider", gameObject), m_trigger(isTrigger), m_offset(offset) 
+{
+	gameObject->GetScene()->RegisterCollider(this);
+}
+
 Vector3 BoxCollider::findDisplacementVec(const Vector3& pos, const Vector3& dir) const
 {
 	const int MAX_ITERATE = 1000000;
@@ -91,11 +96,6 @@ void BoxCollider::checkCollisionOfCurr()
 
 		Collide(other_obj);
 	}
-}
-
-BoxCollider::BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger) : Component("BoxCollider", gameObject), m_trigger(isTrigger), m_offset(offset) 
-{
-	gameObject->GetScene()->RegisterCollider(this);
 }
 
 void BoxCollider::CheckCollision()
@@ -171,6 +171,7 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	Vector3f vel = rb->GetVelocity();
 	Vector3f other_vel = other_rb->GetVelocity();
 
+	//https://en.wikipedia.org/wiki/Elastic_collision
 	Vector3 center = GetCenter();
 	Vector3 other_center = other_col->GetCenter();
 
@@ -312,21 +313,14 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 
 	}
 
+
 	if(i == MAX_ITERATE - 1)
 	{
 		std::cout << "CheckPath happened too many times, check BoxCollider" << std::endl;
 		return lim;
 	}
 
-	if(collided)
-	{
-		return new_pos;
-	}
-	else
-	{
-		return lim;
-	}
-
+	return new_pos;
 }
 
 bool BoxCollider::CheckCollision(const Vector3& pos) const
