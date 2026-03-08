@@ -33,7 +33,7 @@ class BoxCollider : public Component
 
 		Vector3 findDisplacementVec(const Vector3& pos, const Vector3& dir) const;
 		Vector3 findDirectionToPushAway(const Vector3& pos) const;
-		bool checkCollision(const Vector3& pos) const;
+		GameObject* checkCollision(const Vector3& pos) const;
 		void checkCollisionOfCurr();
 	public:
 		BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger = false);

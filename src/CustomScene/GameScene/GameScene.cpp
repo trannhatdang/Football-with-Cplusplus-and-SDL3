@@ -263,25 +263,25 @@ void GenerateGameScene(const std::unique_ptr<Scene>& gameScene)
 
 	auto goalpost10 = gameScene->AddGameObject("Goalpost10", "Goalpost");
 	auto goalpost10_col = static_cast<BoxCollider*>(goalpost10->AddComponent(new BoxCollider(goalpost10, {80, 10})));
-	goalpost10->AddComponent(new Rigidbody(goalpost10, true, 1, 60000));
+	goalpost10->AddComponent(new Rigidbody(goalpost10, true, 1, INT_MAX));
 	goalpost10->GetTransform()->SetPosition({ 0, 160 * 2 });
-	goalpost10_col->SetCenter({ 0 , 10000, 0});
+	goalpost10_col->SetCenter({ -10000 , -10000, 0});
 
 	auto goalpost11 = gameScene->AddGameObject("Goalpost11", "Goalpost");
 	auto goalpost11_col = static_cast<BoxCollider*>(goalpost11->AddComponent(new BoxCollider(goalpost11, {80, 10})));
-	goalpost11->AddComponent(new Rigidbody(goalpost11, true, 1, 60000));
+	goalpost11->AddComponent(new Rigidbody(goalpost11, true, 1, INT_MAX));
 	goalpost11->GetTransform()->SetPosition({ 0, 160 * 2 + 150 });
 	goalpost11_col->SetCenter({ 0 , -10000, 0});
 
 	auto goalpost20 = gameScene->AddGameObject("Goalpost20", "Goalpost");
 	auto goalpost20_col = static_cast<BoxCollider*>(goalpost20->AddComponent(new BoxCollider(goalpost20, {80, 10})));
-	goalpost20->AddComponent(new Rigidbody(goalpost20, true, 1, 60000));
+	goalpost20->AddComponent(new Rigidbody(goalpost20, true, 1, INT_MAX));
 	goalpost20->GetTransform()->SetPosition({ 160 * 6 + 80, 160 * 2 });
 	goalpost20_col->SetCenter({ 0, 10000, 0});
 
 	auto goalpost21 = gameScene->AddGameObject("Goalpost21", "Goalpost");
 	auto goalpost21_col = static_cast<BoxCollider*>(goalpost21->AddComponent(new BoxCollider(goalpost21, {80, 10})));
-	goalpost21->AddComponent(new Rigidbody(goalpost21, true, 1, 60000));
+	goalpost21->AddComponent(new Rigidbody(goalpost21, true, 1, INT_MAX));
 	goalpost21->GetTransform()->SetPosition({ 160 * 6 + 80, 160 * 2 + 150 });
 	goalpost21_col->SetCenter({ 0, 10000, 0});
 

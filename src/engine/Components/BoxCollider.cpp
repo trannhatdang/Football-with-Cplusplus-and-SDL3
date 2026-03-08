@@ -77,7 +77,7 @@ Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos) const
 	return vecs[min_index];
 }
 
-bool BoxCollider::checkCollision(const Vector3& pos) const
+GameObject* BoxCollider::checkCollision(const Vector3& pos) const
 {
 	auto colls = gameObject->GetScene()->GetColliders();
 	int size = colls.size();
@@ -94,11 +94,11 @@ bool BoxCollider::checkCollision(const Vector3& pos) const
 
 		if(CompareBox(pos, off, other_pos, other_off))
 		{
-			return true;
+			return other_obj;
 		}
 	}
 
-	return false;
+	return nullptr;
 }
 
 void BoxCollider::checkCollisionOfCurr()
@@ -124,7 +124,6 @@ void BoxCollider::checkCollisionOfCurr()
 
 void BoxCollider::CheckCollision()
 {
-	checkCollisionOfCurr();
 	m_objectsCollided.clear();
 }
 
@@ -135,7 +134,7 @@ void BoxCollider::OnStart()
 
 void BoxCollider::OnFixedIterate()
 {
-
+	checkCollisionOfCurr();
 }
 
 void BoxCollider::OnIterate()
@@ -171,13 +170,10 @@ void BoxCollider::OnEvent(SDL_Event* event)
 
 void BoxCollider::DoCollision(GameObject* other_obj)
 {
-	if(m_objectsCollided.find(other_obj) != m_objectsCollided.end()) return;
-	if(other_obj == gameObject) return;
+	if(other_obj == gameObject || m_trigger) return;
 
 	Rigidbody* rb = (Rigidbody*)gameObject->GetComponent("Rigidbody");
 	if(rb == NULL) return; //if gameobject does not have a rigidbody, it stays still
-	
-	m_objectsCollided.insert(other_obj);
 
 	BoxCollider* other_col = (BoxCollider*)other_obj->GetComponent("BoxCollider");
 
@@ -187,15 +183,19 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	auto dir_info = findDirectionToPushAway(pos);
 	rb->MovePosition(pos + dir_info);
 
+	if(gameObject->GetName() == "Ball")
+	{
+		std::cout << "dir_info: " << dir_info << std::endl;
+	}
+
 	if(other_rb == NULL) return;
 
-	//calculatinng vel after: https://en.wikipedia.org/wiki/Elastic_collision
+	//https://en.wikipedia.org/wiki/Elastic_collision
 	int mass = rb->GetMass();
 	int other_mass = other_rb->GetMass();
 	Vector3f vel = rb->GetVelocity();
 	Vector3f other_vel = other_rb->GetVelocity();
 
-	//https://en.wikipedia.org/wiki/Elastic_collision
 	Vector3 center = GetCenter();
 	Vector3 other_center = other_col->GetCenter();
 
@@ -208,7 +208,7 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 
 	Vector3f vel_after = vel - cen_operand;
 
-	if(vel.magnitude() > 1000)
+	if(vel.magnitude() > 1 && gameObject->GetName() == "Ball")
 	{
 		std::cout << gameObject->GetName() << " colliding with " << other_obj->GetName() << std::endl;
 		std::cout << "mass: " << mass << " " << other_mass << std::endl;
@@ -232,22 +232,24 @@ void BoxCollider::DoCollision(GameObject* other_obj)
 	}
 
 	rb->SetVelocity(vel_after);
-
 }
 
 void BoxCollider::Collide(GameObject* other_obj)
 {
-	if(m_objectsCollided.find(other_obj) != m_objectsCollided.end()) return;
+	if(other_obj == gameObject) return;
 
-	if(m_trigger)
+	auto other_col = static_cast<BoxCollider*>(other_obj->GetComponent("BoxCollider"));
+
+	if(m_trigger || other_col->m_trigger)
 	{
 		gameObject->OnTriggerEnter(other_obj);
+		other_obj->OnTriggerEnter(gameObject);
 	}
 	else
 	{
 		gameObject->OnCollisionEnter(other_obj);
 		DoCollision(other_obj);
-		static_cast<BoxCollider*>(other_obj->GetComponent("BoxCollider"))->Collide(gameObject);
+		static_cast<BoxCollider*>(other_obj->GetComponent("BoxCollider"))->DoCollision(gameObject);
 	}
 }
 
@@ -311,9 +313,12 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 			limit = true;
 		}
 
-		if(checkCollision(new_pos))
+		GameObject* obj = checkCollision(new_pos);
+
+		if(obj)
 		{
 			collided = true;
+			//Collide(obj);
 		}
 
 		if(limit || collided)
@@ -336,7 +341,6 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 		//std::cout << "lim: " << lim << std::endl;
 
 	}
-
 
 	if(i == MAX_ITERATE - 1)
 	{
