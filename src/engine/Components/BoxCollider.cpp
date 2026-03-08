@@ -72,30 +72,6 @@ Vector3 BoxCollider::findDirectionToPushAway(const Vector3& pos) const
 	return vecs[min_index];
 }
 
-bool BoxCollider::checkCollision(const Vector3& pos) const
-{
-	auto colls = gameObject->GetScene()->GetColliders();
-	int size = colls.size();
-	for(int i = 0; i < size; ++i)
-	{
-		auto other_col = colls[i];
-		if(other_col == this || other_col->m_trigger) continue;
-
-		GameObject* other_obj = other_col->gameObject;
-
-		BColliderOff off = m_offset;
-		Vector3 other_pos = ((Transform*)(other_obj->GetTransform()))->GetPosition();
-		BColliderOff other_off = other_col->GetOffset();
-
-		if(CompareBox(pos, off, other_pos, other_off))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void BoxCollider::checkCollisionOfCurr()
 {
 	auto colls = gameObject->GetScene()->GetColliders();
@@ -310,7 +286,7 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 			limit = true;
 		}
 
-		if(checkCollision(new_pos))
+		if(CheckCollision(new_pos))
 		{
 			collided = true;
 		}
@@ -320,7 +296,6 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 			break;
 		}
 	}
-
 	
 	if(gameObject->GetName() == "Ball")
 	{
@@ -353,6 +328,31 @@ Vector3 BoxCollider::CheckPath(const Vector3& pos, const Vector3f& dir)
 	}
 
 }
+
+bool BoxCollider::CheckCollision(const Vector3& pos) const
+{
+	auto colls = gameObject->GetScene()->GetColliders();
+	int size = colls.size();
+	for(int i = 0; i < size; ++i)
+	{
+		auto other_col = colls[i];
+		if(other_col == this || other_col->m_trigger) continue;
+
+		GameObject* other_obj = other_col->gameObject;
+
+		BColliderOff off = m_offset;
+		Vector3 other_pos = ((Transform*)(other_obj->GetTransform()))->GetPosition();
+		BColliderOff other_off = other_col->GetOffset();
+
+		if(CompareBox(pos, off, other_pos, other_off))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 std::unique_ptr<Component> BoxCollider::copy()
 {

@@ -33,7 +33,6 @@ class BoxCollider : public Component
 
 		Vector3 findDisplacementVec(const Vector3& pos, const Vector3& dir) const;
 		Vector3 findDirectionToPushAway(const Vector3& pos) const;
-		bool checkCollision(const Vector3& pos) const;
 		void checkCollisionOfCurr();
 	public:
 		BoxCollider(GameObject* gameObject, const BColliderOff& offset, bool isTrigger = false);
@@ -50,6 +49,7 @@ class BoxCollider : public Component
 		void SetOffset(const BColliderOff& offset);
 		void SetCenter(const Vector3& center);
 		Vector3 CheckPath(const Vector3& pos, const Vector3f& dir);
+		bool CheckCollision(const Vector3& pos) const;
 
 		std::unique_ptr<Component> copy();
 };
